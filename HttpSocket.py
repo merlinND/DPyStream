@@ -1,4 +1,5 @@
-﻿# -*-coding:Utf-8 -*
+﻿#!/usr/local/bin/python3.3
+# -*-coding:Utf-8 -*
 import os
 import socket
 
