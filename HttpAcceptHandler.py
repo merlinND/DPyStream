@@ -1,4 +1,4 @@
-﻿#!/usr/local/bin/python3.3
+﻿#!/usr/local/bin/ python3.3
 # -*-coding:Utf-8 -*
 import select
 
@@ -11,6 +11,8 @@ class HttpAcceptHandler(Handler):
 	def __init__(self, serverSocket):
 		Handler.__init__(self)
 		self.serverSocket = serverSocket
+		self._selectTimer = 3
+
 		# Par défaut, le socket est bindé à 127.0.0.1 et écoute sur le port 15000 en TCP
 		self.serverSocket.listen()
 		
@@ -21,7 +23,7 @@ class HttpAcceptHandler(Handler):
 		while not self.interruptFlag:
 			# TODO : le accept est toujours bloquant !
 			# Donc même si on fait un interruptFlag, il reste là à attendre	
-			(readyToRead,rw,err) = select.select([self.serverSocket.s],[],[], 20)
+			(readyToRead,rw,err) = select.select([self.serverSocket.s],[],[], self._selectTimer)
 			if readyToRead:
 				clientSocket = self.serverSocket.accept()
 				# A chaque nouvelle connexion, on crée un nouveau thread
@@ -32,7 +34,8 @@ class HttpAcceptHandler(Handler):
 				print("Connection accepted (connection #", len(self.clients), ").")
 	
 	def kill(self):
-		print("Killing all ", len(self.clients) ,"client threads...")
+		print("Killing all", len(self.clients) ,"client threads...")
+		print("Server will go down in", self._selectTimer ,"seconds or less.")
 		# TODO : purger la liste au fur et à mesure ? (pour ne pas occuper trop de mémoire pour rien)
 		# Pour chaque thread client
 		i = 0

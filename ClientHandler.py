@@ -8,7 +8,7 @@ class ClientHandler(Handler):
 	def __init__(self, clientSocket):
 		Handler.__init__(self)
 		self.clientSocket = clientSocket
-		
+
 		# On prépare le catalogue
 		self.catalog = b''
 		self.catalog += b'HTTP/1.1 200 OK\r\nServer: TP_3IF_PythonMediaServer\r\nConnection: Keep-Alive\r\nContent-Type: text/txt\r\nContent-Length: 100\r\n\r\n'
@@ -17,15 +17,22 @@ class ClientHandler(Handler):
 	def run(self):
 		print("Running the new thread")
 		self.receiveCommand()
-		
+	
+	def kill(self):
+		self.interruptFlag = True
+		# On informe aussi le socket qu'il doit se tuer
+		self.clientSocket.kill()
+
 	def receiveCommand(self):
 		command = b''
 		while command != b'e' and not self.interruptFlag:
 			command = self.clientSocket.receive()
 			
 			if command != b'e':
-				print(command, ' received, sending catalog.')
-				self.clientSocket.send(self.catalog)
+				ignoredCharacters = (b'\n', b'\r', b'')
+				if command not in ignoredCharacters:
+					print(command, ' received, sending catalog.')
+					self.clientSocket.send(self.catalog)
 			else:
 				print(command, ' received, closing connection.')
 				self.clientSocket.send(b'The connection is going down now.')
