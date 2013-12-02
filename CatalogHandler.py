@@ -3,12 +3,14 @@
 import Catalog
 from Handler import *
 
-class ClientHandler(Handler):
-	"""Cette classe représente le thread recevant les commandes du client, et lui répondant. On a donc un thread par connexion active avec un client."""
+class CatalogHandler(Handler):
+	"""
+	This class is able to manage connections from clients who are interested in getting the catalog.
+	"""
 	
-	def __init__(self, clientSocket):
+	def __init__(self, socket):
 		Handler.__init__(self)
-		self.clientSocket = clientSocket
+		self.socket = socket
 		
 	def run(self):
 		print("Running the new thread")
@@ -16,20 +18,21 @@ class ClientHandler(Handler):
 	
 	def kill(self):
 		self.interruptFlag = True
-		# On informe aussi le socket qu'il doit se tuer
-		self.clientSocket.kill()
+		# We inform the socket that it must commit suicide
+		self.socket.kill()
 
 	def receiveCommand(self):
 		command = b''
 		while command != b'e' and not self.interruptFlag:
-			command = self.clientSocket.receive()
+			# TODO: send the catalog only one per message received (not per single caracter)
+			command = self.socket.receive(1)
 			
 			if command != b'e':
 				ignoredCharacters = (b'\n', b'\r', b'')
 				if command not in ignoredCharacters:
 					print(command, ' received, sending catalog.')
-					self.clientSocket.send(Catalog.asHttp())
+					self.socket.send(Catalog.asHttp())
 			else:
 				print(command, ' received, closing connection.')
-				self.clientSocket.send(b'The connection is going down now.')
-				self.clientSocket.close()
+				self.socket.send(b'The connection is going down now.')
+				self.socket.close()
