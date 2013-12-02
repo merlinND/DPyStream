@@ -1,0 +1,12 @@
+ID: 3
+Name: video3
+Type: BMP
+Address: 225.100.110.12
+Port: 11111
+Protocol: MCAST_PUSH
+IPS: 0.5
+../resources/1/img1.bmp
+../resources/1/img2.bmp
+../resources/1/img3.bmp
+../resources/1/img4.bmp
+../resources/1/img5.bmp

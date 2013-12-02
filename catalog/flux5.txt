@@ -1,0 +1,12 @@
+ID: 5
+Name: video5
+Type: BMP
+Address: 127.0.0.1
+Port: 11113
+Protocol: TCP_PULL
+IPS: 0.25
+../resources/1/img1.bmp
+../resources/1/img2.bmp
+../resources/1/img3.bmp
+../resources/1/img4.bmp
+../resources/1/img5.bmp
