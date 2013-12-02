@@ -3,10 +3,10 @@
 
 # Y:\3IF\RE\TP-1\src
 
-from HttpSocket import *
+from MySocket import *
 from HttpAcceptHandler import *
 
-serverHandler = HttpAcceptHandler(HttpSocket(10))
+serverHandler = HttpAcceptHandler(MySocket(2))
 serverHandler.start()
 
 dummy = input("Press enter to shutdown server...")

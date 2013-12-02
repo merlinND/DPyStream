@@ -21,8 +21,7 @@ class HttpAcceptHandler(Handler):
 		
 	def run(self):
 		while not self.interruptFlag:
-			# TODO : le accept est toujours bloquant !
-			# Donc même si on fait un interruptFlag, il reste là à attendre	
+			# Grâce à select.select, le interrupt flag peut arrêter l'attente
 			(readyToRead,rw,err) = select.select([self.serverSocket.s],[],[], self._selectTimer)
 			if readyToRead:
 				clientSocket = self.serverSocket.accept()

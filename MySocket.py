@@ -3,8 +3,8 @@
 import socket
 import select
 
-class HttpSocket:
-	"""HttpSocket implémente nos méthodes de socket génériques."""
+class MySocket:
+	"""MySocket implémente nos méthodes de socket génériques."""
 	
 	def __init__(self, maxConnections = 5, s = None):
 		if s is None:
@@ -35,7 +35,7 @@ class HttpSocket:
 
 	def accept(self):
 		(clientSocket, address) = self.s.accept()
-		return HttpSocket(s = clientSocket)
+		return MySocket(s = clientSocket)
 	
 	def send(self, message):
 		totalSent = 0
