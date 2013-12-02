@@ -6,7 +6,10 @@ from Handler import *
 from ClientHandler import *
 
 class HttpAcceptHandler(Handler):
-	"""Cette classe représente le thread recevant les demandes de connexion et créant un nouveau socket (et thread associé) par client."""
+	"""
+	HttpAcceptHandler represents the thread receiving the connection requests and creating
+	a new socket (and associated thread) for each client.
+	"""
 	
 	def __init__(self, serverSocket, host = '127.0.0.1', port = 15000):
 		Handler.__init__(self)
