@@ -5,12 +5,14 @@
 
 from CatalogParser import *
 
+from ResourceManager import ResourceManager
+
 from MySocket import *
 from HttpAcceptHandler import *
 
-catalogParser = CatalogParser()
-(catalogAddress, catalogPort) = catalogParser.parse('catalog/startup.txt') 
-print(catalogAddress, catalogPort)
+#catalogParser = CatalogParser()
+#(catalogAddress, catalogPort) = catalogParser.parse('catalog/startup.txt') 
+#print(catalogAddress, catalogPort)
 #serverHandler = HttpAcceptHandler(MySocket(2))
 #serverHandler.start()
 

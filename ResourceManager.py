@@ -16,7 +16,7 @@ class ResourceManager:
 		Saves all given paths under the id mediaId WITHOUT loading the files.
 		Once a resource is added, it can be retrieved via the getFrame.
 		"""
-		_paths[mediaId] = imageList
+		ResourceManager._paths[mediaId] = framePaths
 
 	@staticmethod
 	def getFrame(mediaId, frameId):
@@ -34,6 +34,6 @@ class ResourceManager:
 		Loads all frames for the media mediaId (into _resources).
 		"""
 		imageList = []
-		for path in _paths[mediaId]:
+		for path in ResourceManager._paths[mediaId]:
 			imageList.append(open(path, 'rb+'))
 		ResourceManager._resources[mediaId] = imageList
