@@ -3,13 +3,18 @@
 
 # Y:\3IF\RE\TP-1\src
 
+from CatalogParser import *
+
 from MySocket import *
 from HttpAcceptHandler import *
 
-serverHandler = HttpAcceptHandler(MySocket(2))
-serverHandler.start()
+catalogParser = CatalogParser()
+(catalogAddress, catalogPort) = catalogParser.parse('catalog/startup.txt') 
+print(catalogAddress, catalogPort)
+#serverHandler = HttpAcceptHandler(MySocket(2))
+#serverHandler.start()
 
 dummy = input("Press enter to shutdown server...")
 # Après que l'administrateur du serveur ait appuyé sur une touche
 # On ferme toutes les connexions et on quitte l'application
-serverHandler.kill()
+#serverHandler.kill()
