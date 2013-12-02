@@ -1,5 +1,6 @@
 ﻿#!/usr/local/bin/python3.3
 # -*-coding:Utf-8 -*
+import Catalog
 from Handler import *
 
 class ClientHandler(Handler):
@@ -8,11 +9,6 @@ class ClientHandler(Handler):
 	def __init__(self, clientSocket):
 		Handler.__init__(self)
 		self.clientSocket = clientSocket
-
-		# On prépare le catalogue
-		self.catalog = b''
-		self.catalog += b'HTTP/1.1 200 OK\r\nServer: TP_3IF_PythonMediaServer\r\nConnection: Keep-Alive\r\nContent-Type: text/txt\r\nContent-Length: 100\r\n\r\n'
-		self.catalog += b'Object ID=1 name=video1 type=BMP address=127.0.0.1 port=8088 protocol=TCP_PUSH ips=1.50\r\nObject ID=3 name=video3 type=BMP address=225.100.110.12 port=11111 protocol=MCAST_PUSH ips=0.50\r\n\r\n'
 		
 	def run(self):
 		print("Running the new thread")
@@ -32,7 +28,7 @@ class ClientHandler(Handler):
 				ignoredCharacters = (b'\n', b'\r', b'')
 				if command not in ignoredCharacters:
 					print(command, ' received, sending catalog.')
-					self.clientSocket.send(self.catalog)
+					self.clientSocket.send(Catalog.asHttp())
 			else:
 				print(command, ' received, closing connection.')
 				self.clientSocket.send(b'The connection is going down now.')
