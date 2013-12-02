@@ -5,10 +5,21 @@
 
 from CatalogParser import *
 
-from ResourceManager import ResourceManager
+import ResourceManager
 
 from MySocket import *
 from HttpAcceptHandler import *
+
+ResourceManager.addResource(
+	"ID1",
+	(
+		"resources/1/img1.bmp",
+		"resources/1/img2.bmp",
+		"resources/1/img3.bmp",
+		"resources/1/img4.bmp",
+		"resources/1/img5.bmp"
+	)
+)
 
 #catalogParser = CatalogParser()
 #(catalogAddress, catalogPort) = catalogParser.parse('catalog/startup.txt') 
