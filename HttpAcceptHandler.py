@@ -8,14 +8,14 @@ from ClientHandler import *
 class HttpAcceptHandler(Handler):
 	"""Cette classe représente le thread recevant les demandes de connexion et créant un nouveau socket (et thread associé) par client."""
 	
-	def __init__(self, serverSocket):
+	def __init__(self, serverSocket, host = '127.0.0.1', port = 15000):
 		Handler.__init__(self)
 		self.serverSocket = serverSocket
 		self._selectTimer = 3
 
 		# Par défaut, le socket est bindé à 127.0.0.1 et écoute sur le port 15000 en TCP
-		self.serverSocket.listen()
-		
+		self.serverSocket.listen(host, port)
+		print('Listening on', host, ':', port)
 		# On maintiendra une liste de tous nos threads clients
 		self.clients = []
 		
