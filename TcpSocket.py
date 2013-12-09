@@ -17,10 +17,10 @@ class TcpSocket:
 		# (for example, in two consecutive runs of the script)
 		self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.maxConnections = maxConnections
-		self._selectTimer = 3
-		self.interruptFlag = False
-		self._buffer = ""
+		self._interruptFlag = False
 		self._blocked = False
+		self._selectTimer = 3
+		self._buffer = ""
 	
 	def listen(self, host = '127.0.0.1', port = 15000):
 		self.s.bind((host, port))
@@ -29,17 +29,17 @@ class TcpSocket:
 	def connect(self, host, port):
 		self.s.connect((host, port))
 
-	def close(self):
+	def _close(self):
 		self.s.send(b'The connection is going down NOW.\r\n')
 		#self.s.send(b'Bye.\r\n')
 		self.s.shutdown(1)
-		self.s.close()
+		self.s._close()
 	
 	def kill(self):
-		self.interruptFlag = True
+		self._interruptFlag = True
 		if not self._blocked:
-			self.close()
-		#else: self.close() called automatically after the timeout
+			self._close()
+		#else: self._close() called automatically after the timeout
 
 	def accept(self):
 		(clientSocket, address) = self.s.accept()
@@ -48,10 +48,10 @@ class TcpSocket:
 	def send(self, message):
 		self._blocked = True
 		totalSent = 0
-		while totalSent < len(message) and not self.interruptFlag:
+		while totalSent < len(message) and not self._interruptFlag:
 			(rr,readyToWrite,err) = select.select([],[self.s],[], self._selectTimer)
-			if self.interruptFlag:
-				self.close()
+			if self._interruptFlag:
+				self._close()
 			if readyToWrite:
 				sent = self.s.send(message[totalSent:])
 				if 0 == sent:
@@ -61,10 +61,10 @@ class TcpSocket:
 
 	def nextLine(self, receiveBuffer=4, delimiter="\r\n"):
 		self._blocked = True
-		while not self.interruptFlag:
+		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
-			if self.interruptFlag:
-				self.close()
+			if self._interruptFlag:
+				self._close()
 			if readyToRead:
 				data = self.s.recv(receiveBuffer)
 				self._buffer += str(data, 'Utf-8')
@@ -76,10 +76,10 @@ class TcpSocket:
 	def receive(self, n = 1):
 		self._blocked = True
 		message = b''
-		while len(message) < n and not self.interruptFlag:
+		while len(message) < n and not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
-			if self.interruptFlag:
-				self.close()
+			if self._interruptFlag:
+				self._close()
 			if readyToRead:
 				chunk = self.s.recv(n)
 				if chunk == b'':

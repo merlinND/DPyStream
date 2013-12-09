@@ -34,5 +34,4 @@ class CatalogHandler(Handler):
 					self.socket.send(Catalog.asHttp())
 			else:
 				print(command, ' received, closing connection.')
-				self.socket.send(b'The connection is going down now.')
-				self.socket.close()
+				self.kill()
