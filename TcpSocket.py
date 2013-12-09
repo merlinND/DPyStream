@@ -49,16 +49,20 @@ class TcpSocket:
 					raise RuntimeError("The HTTP Socket connection was broken while trying to send.")
 				totalSent += sent
 
-	def receiveUntil(self, stopCharacter):
-		message = b''
-		chunk = message[-1]
-		while chunk != stopCharacter and not self.interruptFlag:
+	def readlines(sock, recv_buffer=4096, delim='\r\n'):
+		buffer = b''
+		data = True
+		while data and not interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
 			if readyToRead:
-				chunk = self.s.recv(1)
-				if chunk == b'':
-					raise RuntimeError("The HTTP Socket connection was broken while trying to receive.")
-				message += chunk
+				data = sock.recv(recv_buffer)
+				buffer += data
+
+			while buffer.find(delim) != -1:
+				line, buffer = buffer.split('\n', 1)
+				yield line
+		return
+
 	def receive(self, n = 1):
 		message = b''
 		while len(message) < n and not self.interruptFlag:
