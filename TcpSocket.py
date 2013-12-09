@@ -23,7 +23,6 @@ class TcpSocket:
 	def listen(self, host = '127.0.0.1', port = 15000):
 		self.s.bind((host, port))
 		self.s.listen(self.maxConnections)
-		print("HTTP server started, will accept ", self.maxConnections, " connections at most.")
 	
 	def connect(self, host, port):
 		self.s.connect((host, port))

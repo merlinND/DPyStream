@@ -6,6 +6,7 @@ Indeed, each media parsed by Catalog has its own connection type (TCP_PULL, UDP_
 Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerFactory.createAppropriateHandler(42000) should thus return a new instance of UdpPullHandler.
 """
 from handlers.CatalogHandler import *
+from handlers.TcpPullHandler import *
 
 _connectionTypes = {};
 
@@ -20,7 +21,7 @@ def setConnectionTypes(connectionTypes):
 		if thisType == 'CATALOG':
 			_connectionTypes[port] = CatalogHandler;
 		elif thisType == 'TCP_PULL':
-			_connectionTypes[port] = None; #TcpPullHandler;
+			_connectionTypes[port] = TcpPullHandler; #TcpPullHandler;
 		elif thisType == 'TCP_PUSH':
 			_connectionTypes[port] = None; #TcpPushHandler;
 		elif thisType == 'UDP_PULL':

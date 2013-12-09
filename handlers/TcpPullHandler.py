@@ -22,5 +22,5 @@ class TcpPullHandler(Handler):
 
 	def receiveCommand(self):
 		for l in self.socket.readlines():
-			if ("GET " == l[:4])
+			if ("GET " == l[:4]):
 				print ("Receive a GET command!!!")
