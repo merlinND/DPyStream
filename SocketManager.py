@@ -16,8 +16,7 @@ class SocketManager(Thread):
 		Thread.__init__(self)
 		self.interruptFlag = False
 
-		# TODO: look up the up-bound for the TcpSocket
-		self.serverSocket = TcpSocket(10)
+		self.serverSocket = TcpSocket()
 		self._selectTimer = 3
 
 		# By default, the socket is bound to 127.0.0.1 on port 15000

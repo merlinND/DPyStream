@@ -4,7 +4,9 @@ import socket
 import select
 
 class TcpSocket:
-	"""TcpSocket implements our high level methods to send and receive information."""
+	"""
+	TcpSocket implements our high level methods to send and receive information.
+	"""
 	
 	def __init__(self, maxConnections = 5, s = None):
 		if s is None:

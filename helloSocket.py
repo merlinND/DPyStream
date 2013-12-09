@@ -4,7 +4,7 @@
 # Y:\3IF\RE\TP-1\src
 
 import Catalog
-from handlers import HandlerFactory
+#from handlers import HandlerFactory
 from TcpSocket import *
 from SocketManager import *
 
