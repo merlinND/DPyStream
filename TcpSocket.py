@@ -17,6 +17,7 @@ class TcpSocket:
 		# (for example, in two consecutive runs of the script)
 		self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.maxConnections = maxConnections
+		# These options allow to interrupt the socket during a recv or send
 		self._interruptFlag = False
 		self._blocked = False
 		self._selectTimer = 3
@@ -87,17 +88,3 @@ class TcpSocket:
 				message += chunk
 		self._blocked = False
 		return message
-
-
-
-
-
-
-
-
-
-
-
-
-
-
