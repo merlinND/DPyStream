@@ -21,9 +21,11 @@ class TcpPullHandler(Handler):
 		self.socket.kill()
 
 	def receiveCommand(self):
-		keepReading = True
-		for command in self.socket.readLinesWhile(keepReading):
-			if ("GET " == command[:4]):
-				print("GET command received.")
-			else:
-				print("other command received.")
+		while not self.interruptFlag:
+			command = self.socket.nextLine()
+
+			if "END" == command:
+				command = self.socket.nextLine()
+#				if "" == command:
+				print ("killing")
+				self.kill()
