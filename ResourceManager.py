@@ -18,12 +18,23 @@ def addResource(mediaId, framePaths):
 
 def getFrame(mediaId, frameId):
 	"""
-	Returns serialized image frameId of the media mediaId.
+	Returns serialized image frameId of the media mediaId and id of the next available frame id.
 	frameId is an integer representing the offset in the frame list.
 	"""
 	if mediaId not in _resources:
 		_loadFrames(mediaId)
-	return _resources[mediaId][frameId]
+		print(mediaId, "is now in cache.")
+	return (_resources[mediaId][frameId], getNextFrameId(mediaId, frameId))
+
+def getNextFrameId(mediaId, frameId):
+	"""
+	Returns the next available frame id for this media.
+	If we reach the last frame available or a non-existing frame, we loop back to the beginning
+	"""
+	if frameId < len(_resources[mediaId]) - 1:
+		return frameId + 1
+	else:
+		return 0
 
 def _loadFrames(mediaId):
 	"""
@@ -31,5 +42,7 @@ def _loadFrames(mediaId):
 	"""
 	imageList = []
 	for path in _paths[mediaId]:
-		imageList.append(open(path, 'rb+'))
+		resource = open(path, 'rb+')
+		imageList.append(resource.read())
+		# TODO : handle resource not found
 	_resources[mediaId] = imageList

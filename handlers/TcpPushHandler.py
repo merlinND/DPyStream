@@ -19,7 +19,7 @@ class TcpPushHandler(Handler):
 
 		# TODO : these properties should come from the catalog
 		self._mediaId = 1
-		self._currentFrame = 0
+		self._currentFrameId = 0
 		self._interval = 1 # Interval in seconds (replace with framerate from catalog?)
 		
 		# We create a new timer (no autostart)
@@ -32,6 +32,7 @@ class TcpPushHandler(Handler):
 	
 	def kill(self):
 		self.interruptFlag = True
+		self.stopPushing()
 		# We inform the socket that we want it to commit suicide
 		self.socket.kill()
 
@@ -72,11 +73,10 @@ class TcpPushHandler(Handler):
 		# The timer just timed out (because we were just called)
 		self._isTimerRunning = False
 
-		frame = ResourceManager.getFrame(self._mediaId, self._currentFrame)
-		self._currentFrame += 1
+		(frame, self._currentFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 
 		# TODO : actually send the frame to the client
-		print("Sending frame...", frame.read())
-
+		print("Sending frame...", frame)
+		print("Next frame will be :", self._currentFrameId)
 		# We restart the timer
 		self.restartTimer(True)
