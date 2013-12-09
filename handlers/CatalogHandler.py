@@ -1,7 +1,7 @@
 ﻿#!/usr/local/bin/python3.3
 # -*-coding:Utf-8 -*
 import Catalog
-from Handler import *
+from handlers.Handler import *
 
 class CatalogHandler(Handler):
 	"""
@@ -18,7 +18,7 @@ class CatalogHandler(Handler):
 	
 	def kill(self):
 		self.interruptFlag = True
-		# We inform the socket that it must commit suicide
+		# We inform the socket that we want it to commit suicide
 		self.socket.kill()
 
 	def receiveCommand(self):
