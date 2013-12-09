@@ -7,6 +7,7 @@ Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerF
 """
 from handlers.CatalogHandler import *
 from handlers.TcpPullHandler import *
+from handlers.TcpPushHandler import *
 
 _connectionTypes = {};
 
@@ -21,9 +22,9 @@ def setConnectionTypes(connectionTypes):
 		if thisType == 'CATALOG':
 			_connectionTypes[port] = CatalogHandler;
 		elif thisType == 'TCP_PULL':
-			_connectionTypes[port] = TcpPullHandler; #TcpPullHandler;
+			_connectionTypes[port] = TcpPullHandler;
 		elif thisType == 'TCP_PUSH':
-			_connectionTypes[port] = None; #TcpPushHandler;
+			_connectionTypes[port] = TcpPushHandler;
 		elif thisType == 'UDP_PULL':
 			_connectionTypes[port] = None; #UdpPullHandler;
 		elif thisType == 'UDP_PUSH':
