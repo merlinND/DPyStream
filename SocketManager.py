@@ -3,7 +3,7 @@
 from threading import Thread
 import select
 
-from handlers.CatalogHandler import *
+from handlers import HandlerFactory
 from TcpSocket import *
 
 class SocketManager(Thread):
@@ -18,6 +18,7 @@ class SocketManager(Thread):
 
 		self.serverSocket = TcpSocket()
 		self._selectTimer = 3
+		self._listeningPort = port
 
 		# By default, the socket is bound to 127.0.0.1 on port 15000
 		self.serverSocket.listen(host, port)
@@ -33,7 +34,7 @@ class SocketManager(Thread):
 				clientSocket = self.serverSocket.accept()
 				# At each new connection, we create a new handler, which runs in a new thread
 				# TODO : use a HandlerFactory to instanciate the right kind of handler depending on the type of socket that we are managing
-				clientThread = CatalogHandler(clientSocket)
+				clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
 
 				self.clients.append(clientThread)
 				clientThread.start()
@@ -54,4 +55,4 @@ class SocketManager(Thread):
 			print(( len(self.clients) - i), " clients still alive")
 		
 		# And we then kill ourself
-		Handler.kill(self)
+		self.interruptFlag = True

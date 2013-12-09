@@ -4,7 +4,7 @@
 #import ResourceManager
 
 """
-This class is in charge of parsing a catalog file. 
+This module is in charge of parsing a catalog file. 
 It first loads a file which contains the server address, the server port (on which it should serve the catalog) and a list of media descriptor files.
 It then goes through the list of descriptor files and parses each file.
 """
@@ -40,7 +40,7 @@ def parse(filename):
 
 		# First two lines : server address and port
 		_catalogAddress = startupContent[0].split(': ')[1]
-		_catalogPort = startupContent[1].split(': ')[1]
+		_catalogPort = int(startupContent[1].split(': ')[1])
 
 		# All other lines : path to media descriptor files
 		mediaDescriptors = startupContent[2:]
@@ -52,7 +52,7 @@ def parse(filename):
 			# Add this media to the catalog
 			_catalog.append(media)
 
-		return (_catalogAddress, int(_catalogPort))
+		return (_catalogAddress, _catalogPort)
 
 def _parseMediaDescriptor(filename):
 	"""
@@ -103,6 +103,9 @@ def getConnectionTypes():
 	}
 	"""
 	connectionTypes = {}
+	# Add one connection type for catalog serving
+	connectionTypes[_catalogPort] = 'CATALOG'
+
 	for media in _catalog:
 		connectionTypes[media['port']] = media['protocol']
 	return connectionTypes
