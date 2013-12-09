@@ -25,7 +25,5 @@ class TcpPullHandler(Handler):
 			command = self.socket.nextLine()
 
 			if "END" == command:
-				command = self.socket.nextLine()
-#				if "" == command:
-				print ("killing")
-				self.kill()
+				if "" == self.socket.nextLine():
+					self.kill()

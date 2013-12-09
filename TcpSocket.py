@@ -33,7 +33,7 @@ class TcpSocket:
 		self.s.send(b'The connection is going down NOW.\r\n')
 		#self.s.send(b'Bye.\r\n')
 		self.s.shutdown(1)
-		self.s._close()
+		self.s.close()
 	
 	def kill(self):
 		self._interruptFlag = True
