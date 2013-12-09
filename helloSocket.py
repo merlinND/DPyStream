@@ -8,8 +8,8 @@ from handlers.HandlerFactory import *
 from TcpSocket import *
 from SocketManager import *
 
-
 (catalogAddress, catalogPort) = Catalog.parse('catalog/startup.txt')
+connectionTypes = Catalog.getConnectionTypes()
 
 # Start the server that will serve the catalog
 catalogServerHandler = SocketManager(catalogAddress, catalogPort)

@@ -89,6 +89,24 @@ def _parseMediaDescriptor(filename):
 
 	return media
 
+def getConnectionTypes():
+	"""
+	Returns a dictionary associating each port to its connection type (written as string), taken directly from the media descriptor.
+	Example : 
+	{
+		'8088': 'TCP_PUSH',
+		'12234': 'MCAST_PUSH',
+		'11114': 'UDP_PULL',
+		'11111': 'MCAST_PUSH',
+		'11113': 'TCP_PULL',
+		'11112': 'UDP_PUSH'
+	}
+	"""
+	connectionTypes = {}
+	for media in _catalog:
+		connectionTypes[media['port']] = media['protocol']
+	return connectionTypes
+
 def asHttp():
 	"""
 	Returns the catalog as an HTTP response.
