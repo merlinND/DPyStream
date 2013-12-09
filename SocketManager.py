@@ -3,7 +3,7 @@
 from threading import Thread
 import select
 
-from handlers import CatalogHandler
+from handlers.CatalogHandler import *
 from TcpSocket import *
 
 class SocketManager(Thread):

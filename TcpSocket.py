@@ -48,7 +48,17 @@ class TcpSocket:
 				if 0 == sent:
 					raise RuntimeError("The HTTP Socket connection was broken while trying to send.")
 				totalSent += sent
-	
+
+	def receiveUntil(self, stopCharacter):
+		message = b''
+		chunk = message[-1]
+		while chunk != stopCharacter and not self.interruptFlag:
+			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
+			if readyToRead:
+				chunk = self.s.recv(1)
+				if chunk == b'':
+					raise RuntimeError("The HTTP Socket connection was broken while trying to receive.")
+				message += chunk
 	def receive(self, n = 1):
 		message = b''
 		while len(message) < n and not self.interruptFlag:
