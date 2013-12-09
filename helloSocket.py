@@ -8,17 +8,21 @@ from handlers import HandlerFactory
 from TcpSocket import *
 from SocketManager import *
 
-(catalogAddress, catalogPort) = Catalog.parse('catalog/startup.txt')
+(serverAddress, catalogPort) = Catalog.parse('catalog/startup.txt')
 connectionTypes = Catalog.getConnectionTypes()
 
 HandlerFactory.setConnectionTypes(connectionTypes)
 
-# TODO : instanciate one SocketManager per media (it will accept new connections)
-# Start the server that will serve the catalog
-catalogServer = SocketManager(catalogAddress, catalogPort)
-catalogServer.start()
+# Instanciate one SocketManager per media + one for the catalog
+# (these will accept all new connections)
+servers = []
+for port in connectionTypes:
+	server = SocketManager(serverAddress, port)
+	server.start()
+	servers.append(server)
 
 dummy = input("Press enter to shutdown server...")
 # Once any input was given, we start closing down the connections
 # The script will end when all the connections are released
-catalogServer.kill()
+for server in servers:
+	server.kill()

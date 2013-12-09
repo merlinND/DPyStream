@@ -41,8 +41,7 @@ class SocketManager(Thread):
 				print("Connection accepted (connection #", len(self.clients), ").")
 	
 	def kill(self):
-		print("Killing all", len(self.clients) ,"client threads...")
-		print("Server will go down in", self._selectTimer ,"seconds or less.")
+		print("Closing port {} : killing {} client threads (will go down in {} seconds or less.".format(self._listeningPort, len(self.clients), self._selectTimer))
 
 		# TODO : sometimes client connections go down even if we do not kill them. Purge the clients list regularly ?
 

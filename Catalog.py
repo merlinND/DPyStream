@@ -107,7 +107,7 @@ def getConnectionTypes():
 	connectionTypes[_catalogPort] = 'CATALOG'
 
 	for media in _catalog:
-		connectionTypes[media['port']] = media['protocol']
+		connectionTypes[int(media['port'])] = media['protocol']
 	return connectionTypes
 
 def asHttp():
