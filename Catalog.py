@@ -1,13 +1,12 @@
 #!/usr/local/bin/python3.3
 # -*-coding:Utf-8 -*
 
-#import ResourceManager
-
 """
 This module is in charge of parsing a catalog file. 
 It first loads a file which contains the server address, the server port (on which it should serve the catalog) and a list of media descriptor files.
 It then goes through the list of descriptor files and parses each file.
 """
+import ResourceManager
 
 ENDL = "\n" # "\r\n"
 PATH_TO_CATALOG_FOLDER = "catalog/"
@@ -65,11 +64,11 @@ def _parseMediaDescriptor(filename):
 		Port: 8088
 		Protocol: TCP_PUSH
 		IPS: 1.5
-		../resources/1/img1.bmp
-		../resources/1/img2.bmp
-		../resources/1/img3.bmp
-		../resources/1/img4.bmp
-		../resources/1/img5.bmp
+		resources/1/img1.bmp
+		resources/1/img2.bmp
+		resources/1/img3.bmp
+		resources/1/img4.bmp
+		resources/1/img5.bmp
 	"""
 	media = {}
 
@@ -88,6 +87,10 @@ def _parseMediaDescriptor(filename):
 			media['files'].append(path)
 
 	return media
+
+def addMediaToResourceManager():
+	for media in _catalog:
+		ResourceManager.addResource(int(media["id"]), media["files"])
 
 def getConnectionTypes():
 	"""

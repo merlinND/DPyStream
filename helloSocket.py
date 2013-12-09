@@ -9,12 +9,13 @@ from TcpSocket import *
 from SocketManager import *
 
 (serverAddress, catalogPort) = Catalog.parse('catalog/startup.txt')
+Catalog.addMediaToResourceManager()
 connectionTypes = Catalog.getConnectionTypes()
 
 HandlerFactory.setConnectionTypes(connectionTypes)
 
 # Instanciate one SocketManager per media + one for the catalog
-# (these will accept all new connections)
+# (these will accept all new TCP control connections)
 servers = []
 for port in connectionTypes:
 	server = SocketManager(serverAddress, port)

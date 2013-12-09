@@ -15,6 +15,7 @@ def addResource(mediaId, framePaths):
 	Once a resource is added, it can be retrieved via the getFrame.
 	"""
 	_paths[mediaId] = framePaths
+	print(framePaths)
 
 def getFrame(mediaId, frameId):
 	"""

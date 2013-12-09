@@ -5,8 +5,8 @@ Address: 127.0.0.1
 Port: 8088
 Protocol: TCP_PUSH
 IPS: 1.5
-../resources/1/img1.bmp
-../resources/1/img2.bmp
-../resources/1/img3.bmp
-../resources/1/img4.bmp
-../resources/1/img5.bmp
+resources/1/img1.bmp
+resources/1/img2.bmp
+resources/1/img3.bmp
+resources/1/img4.bmp
+resources/1/img5.bmp
