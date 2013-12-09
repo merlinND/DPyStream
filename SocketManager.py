@@ -11,11 +11,12 @@ class SocketManager(Thread):
 	a new socket (and associated thread) for each client.
 	"""
 	
-	def __init__(self, serverSocket, host = '127.0.0.1', port = 15000):
+	def __init__(self, host = '127.0.0.1', port = 15000):
 		Thread.__init__(self)
 		self.interruptFlag = False
 
-		self.serverSocket = serverSocket
+		# TODO: look up the up-bound for the TcpSocket
+		self.serverSocket = TcpSocket(10)
 		self._selectTimer = 3
 
 		# By default, the socket is bound to 127.0.0.1 on port 15000

@@ -3,8 +3,8 @@
 import socket
 import select
 
-class MySocket:
-	"""MySocket implements our high level methods to send and receive information."""
+class TcpSocket:
+	"""TcpSocket implements our high level methods to send and receive information."""
 	
 	def __init__(self, maxConnections = 5, s = None):
 		if s is None:
@@ -35,7 +35,7 @@ class MySocket:
 
 	def accept(self):
 		(clientSocket, address) = self.s.accept()
-		return MySocket(s = clientSocket)
+		return TcpSocket(s = clientSocket)
 	
 	def send(self, message):
 		totalSent = 0
