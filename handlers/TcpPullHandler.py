@@ -12,7 +12,7 @@ class TcpPullHandler(Handler):
 		self.socket = socket
 		
 	def run(self):
-		print("Running the new thread")
+		print("TcpPullHandler ready.")
 		self.receiveCommand()
 	
 	def kill(self):
@@ -21,6 +21,9 @@ class TcpPullHandler(Handler):
 		self.socket.kill()
 
 	def receiveCommand(self):
-		for l in self.socket.readlines():
-			if ("GET " == l[:4]):
-				print ("Receive a GET command!!!")
+		keepReading = True
+		for command in self.socket.readLinesWhile(keepReading):
+			if ("GET " == command[:4]):
+				print("GET command received.")
+			else:
+				print("other command received.")

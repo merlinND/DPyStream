@@ -45,21 +45,21 @@ class TcpSocket:
 			if readyToWrite:
 				sent = self.s.send(message[totalSent:])
 				if 0 == sent:
-					raise RuntimeError("The HTTP Socket connection was broken while trying to send.")
+					raise RuntimeError("The TCP Socket connection was broken while trying to send.")
 				totalSent += sent
 
-	def readlines(sock, recv_buffer=4096, delim='\r\n'):
-		buffer = b''
-		data = True
-		while data and not interruptFlag:
+	def readLinesWhile(self, keepReading, receiveBuffer=4, delimiter="\n"):
+		buffer = ""
+		data = None
+		while keepReading and not self.interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
 			if readyToRead:
-				data = sock.recv(recv_buffer)
-				buffer += data
-
-			while buffer.find(delim) != -1:
-				line, buffer = buffer.split('\n', 1)
-				yield line
+				data = self.s.recv(receiveBuffer)
+				buffer += str(data, 'Utf-8')
+			if data is not None:
+				if buffer.find(delimiter) != -1:
+					(line, buffer) = buffer.split(delimiter, 1)
+					yield line
 		return
 
 	def receive(self, n = 1):
@@ -69,6 +69,6 @@ class TcpSocket:
 			if readyToRead:
 				chunk = self.s.recv(n)
 				if chunk == b'':
-					raise RuntimeError("The HTTP Socket connection was broken while trying to receive.")
+					raise RuntimeError("The TCP Socket connection was broken while trying to receive.")
 				message += chunk
 		return message
