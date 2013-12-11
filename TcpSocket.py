@@ -45,6 +45,9 @@ class TcpSocket:
 	def accept(self):
 		(clientSocket, address) = self.s.accept()
 		return TcpSocket(s = clientSocket)
+
+	def getIp(self):
+		return self.s.getsockname()
 	
 	def send(self, message):
 		self._blocked = True
