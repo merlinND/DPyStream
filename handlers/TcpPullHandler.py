@@ -2,6 +2,13 @@
 
 from handlers.Handler import *
 from TcpSocket import *
+import ResourceManager
+
+GET_COMMAND = "GET "
+END_COMMAND = "END"
+LISTEN_COMMAND = "LISTEN_PORT "
+NEXT_IMG = -1
+END_LINE = "\r\n"
 
 class TcpPullHandler(Handler):
 	"""
@@ -13,6 +20,7 @@ class TcpPullHandler(Handler):
 		self.commandSocket = commandSocket
 		self.dataSocket = None
 		self.mediaId = None
+		self.currentImageId = 0
 		self.listenPort = None
 		
 	def run(self):
@@ -21,10 +29,11 @@ class TcpPullHandler(Handler):
 	
 	def kill(self):
 		self.interruptFlag = True
-		# We inform the sockets that we want it to commit suicide
-		self.commandSocket.kill()
+		# We inform the sockets that we want them to commit suicide
+		# Note: dataSocket must be closed first as the client closes it first
 		if None != self.dataSocket:
 			self.dataSocket.kill()
+		self.commandSocket.kill()
 
 	def receiveCommand(self):
 		while not self.interruptFlag:
@@ -34,25 +43,54 @@ class TcpPullHandler(Handler):
 			if None == command:
 				continue
 
-			if "END" == command:
+			if END_COMMAND == command:
+				# Empty line necessary
 				if "" == self.commandSocket.nextLine():
 					self.kill()
 					print("Connection closed.")
 
-			if "GET " == command[:4]:
+			if GET_COMMAND == command[:len(GET_COMMAND)]:
+				id = int(command[len(GET_COMMAND):])
 				if None == self.dataSocket:
 					# New connection required
-					self._connect(int(command[4:]))
-#				else:
-#					self.imageId = int(command[4:])
+					self.dataSocket = TcpSocket()
+					self._connect(id)
+				else:
+					imageId = int(id)
+					# Empty line necessary
+					if "" == self.commandSocket.nextLine():
+						if (NEXT_IMG == imageId):
+							# Sends and increments the currentImageId
+							self._sendCurrent()
+						else:
+							# Sets the right image ID
+							self.currentImageId = imageId
+
+							# Sends
+							self._sendCurrent()
+
+	def _sendCurrent(self):
+		# Getting the image
+		image = ResourceManager.getFrame(self.mediaId, self.currentImageId)
+
+		# Prepares the message to send
+		message = str(self.currentImageId) + END_LINE
+		message += str(image['size']) + END_LINE
+		message = message.encode('Utf-8')
+		message += image['bytes']
+
+		# Sends it
+		self.dataSocket.send(message)
+
+		# Gets the next image id to send
+		self.currentImageId = image['nextId']
 
 	def _connect(self, mediaId):
 		self.mediaId = mediaId
 		print("mediaId: {}".format(mediaId))
 		command = self.commandSocket.nextLine()
-		if "LISTEN_PORT " == command[:12] and "" == self.commandSocket.nextLine():
-			self.listenPort = int(command[12:])
+		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)] and "" == self.commandSocket.nextLine():
+			self.listenPort = int(command[len(LISTEN_COMMAND):])
 			(self.clientIp, unused) = self.commandSocket.getIp()
-			self.dataSocket = TcpSocket()
 			self.dataSocket.connect(self.clientIp, self.listenPort)
 #		else:

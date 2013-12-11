@@ -1,6 +1,8 @@
 #!/usr/local/bin/python3.3
 # -*-coding:Utf-8 -*
 
+import os
+
 """
 ResourceManager gets the images and loads them in memory whenever they are
 accessed via getFrame.
@@ -23,8 +25,13 @@ def getFrame(mediaId, frameId):
 	"""
 	if mediaId not in _resources:
 		_loadFrames(mediaId)
-		print(mediaId, "is now in cache.")
-	return (_resources[mediaId][frameId], getNextFrameId(mediaId, frameId))
+		print("media {} is now in cache.".format(mediaId))
+	image = {
+				'size'  : os.path.getsize(_paths[mediaId][frameId]),
+				'bytes' : _resources[mediaId][frameId],
+				'nextId': getNextFrameId(mediaId, frameId)
+			}
+	return image
 
 def getNextFrameId(mediaId, frameId):
 	"""
@@ -42,7 +49,12 @@ def _loadFrames(mediaId):
 	"""
 	imageList = []
 	for path in _paths[mediaId]:
-		resource = open(path, 'rb+')
-		imageList.append(resource.read())
+		imageFile = open(path, 'rb')
+		image = b''
+		byte = imageFile.read(1)
+		while b'' != byte:
+			image += byte
+			byte = imageFile.read(1)
+		imageList.append(image)
 		# TODO : handle resource not found
 	_resources[mediaId] = imageList

@@ -52,6 +52,8 @@ class TcpSocket:
 	def send(self, message):
 		self._blocked = True
 		totalSent = 0
+		if str == type(message):
+			message = message.encode('Utf-8')
 		while totalSent < len(message) and not self._interruptFlag:
 			(rr,readyToWrite,err) = select.select([],[self.s],[], self._selectTimer)
 			if self._interruptFlag:
