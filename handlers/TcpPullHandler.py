@@ -4,6 +4,7 @@ from handlers.Handler import *
 from TcpSocket import *
 import ResourceManager
 
+# TODO move to another file (protocol)
 GET_COMMAND = "GET "
 END_COMMAND = "END"
 LISTEN_COMMAND = "LISTEN_PORT "
@@ -16,6 +17,9 @@ class TcpPullHandler(Handler):
 	"""
 	
 	def __init__(self, commandSocket):
+		"""
+		Initializes all attributes
+		"""
 		Handler.__init__(self)
 		self.commandSocket = commandSocket
 		self.dataSocket = None
@@ -28,6 +32,9 @@ class TcpPullHandler(Handler):
 		self.receiveCommand()
 	
 	def kill(self):
+		"""
+		Properly closes all sockets and interrupts the thread
+		"""
 		self.interruptFlag = True
 		# We inform the sockets that we want them to commit suicide
 		# Note: dataSocket must be closed first as the client closes it first
@@ -36,6 +43,10 @@ class TcpPullHandler(Handler):
 		self.commandSocket.kill()
 
 	def receiveCommand(self):
+		"""
+		Real work: interprets the commands emitted via the commandSocket
+		and answers through the dataSocket
+		"""
 		while not self.interruptFlag:
 			command = self.commandSocket.nextLine()
 			print("\"{}\" received".format(command))
@@ -45,6 +56,7 @@ class TcpPullHandler(Handler):
 
 			if END_COMMAND == command:
 				# Empty line necessary
+				print("Waiting for blank line...")
 				if "" == self.commandSocket.nextLine():
 					self.kill()
 					print("Connection closed.")
@@ -58,6 +70,7 @@ class TcpPullHandler(Handler):
 				else:
 					imageId = int(id)
 					# Empty line necessary
+					print("Waiting for blank line...")
 					if "" == self.commandSocket.nextLine():
 						if (NEXT_IMG == imageId):
 							# Sends and increments the currentImageId
@@ -70,6 +83,9 @@ class TcpPullHandler(Handler):
 							self._sendCurrent()
 
 	def _sendCurrent(self):
+		"""
+		Sends the current image (based on currentImageId) via the dataSocket
+		"""
 		# Getting the image
 		image = ResourceManager.getFrame(self.mediaId, self.currentImageId)
 
@@ -86,6 +102,9 @@ class TcpPullHandler(Handler):
 		self.currentImageId = image['nextId']
 
 	def _connect(self, mediaId):
+		"""
+		Connects the dataSocket to the port given via the commandSocket
+		"""
 		self.mediaId = mediaId
 		print("mediaId: {}".format(mediaId))
 		command = self.commandSocket.nextLine()
@@ -93,4 +112,3 @@ class TcpPullHandler(Handler):
 			self.listenPort = int(command[len(LISTEN_COMMAND):])
 			(self.clientIp, unused) = self.commandSocket.getIp()
 			self.dataSocket.connect(self.clientIp, self.listenPort)
-#		else:
