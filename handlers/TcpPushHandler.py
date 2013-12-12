@@ -4,6 +4,9 @@ from threading import Timer
 from handlers.Handler import *
 import ResourceManager
 
+# TODO : make this constant globally accessible across the application
+ENDL = b'\n\r'
+
 class TcpPushHandler(Handler):
 	"""
 	This class is able to manage connections from clients who are interested in getting a media via protocol TCP_PUSH.
@@ -46,6 +49,7 @@ class TcpPushHandler(Handler):
 				ignoredCharacters = (b'\n', b'\r', b'')
 				if command not in ignoredCharacters:
 					print('Command received, we should interpret it.')
+					# TODO : create a new connection to the client, on the port it specified (content chanel)
 					self.startPushing()
 			else:
 				print(command, ' received, closing connection.')
@@ -73,10 +77,24 @@ class TcpPushHandler(Handler):
 		# The timer just timed out (because we were just called)
 		self._isTimerRunning = False
 
+		frameId = self._currentFrameId
 		(frame, self._currentFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
+		frame = bytes(frame)
 
-		# TODO : actually send the frame to the client
-		print("Sending frame...", frame)
-		print("Next frame will be :", self._currentFrameId)
+		# TODO : actually send the frame to the client *on the content chanel*, not the control chanel
+		print("Sending frame {} next frame will be #{}.".format(frameId, self._currentFrameId))
+
 		# We restart the timer
 		self.restartTimer(True)
+
+	def prepareMessage(self, frameId, frameContent):
+		"""
+		This function takes an image and adds surrounding information so that the client applications can interpret it.
+		It returns a full message ready to be sent to the client via socket, containing:
+		- This frame's id (followed by endline)
+		- This frame's content size (followed by endline)
+		- The actual frame content
+		"""
+		return bytes(str(frameId), 'Utf-8') + ENDL\
+			 + bytes(str(len(frameContent)), 'Utf-8') + ENDL\
+			 + frameContent
