@@ -1,5 +1,4 @@
-﻿#!/usr/local/bin/python3.3
-# -*-coding:Utf-8 -*
+﻿# -*-coding:Utf-8 -*
 
 # Y:\3IF\RE\TP-1\src
 

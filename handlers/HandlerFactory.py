@@ -1,4 +1,3 @@
-#!/usr/local/bin/ python3.3
 # -*-coding:Utf-8 -*
 """
 HandlerFactory is responsible to deliver an instance of the right Handler class when given a connection port.
@@ -8,6 +7,7 @@ Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerF
 from handlers.CatalogHandler import *
 from handlers.TcpPullHandler import *
 from handlers.TcpPushHandler import *
+from handlers.UdpPushHandler import *
 
 _connectionTypes = {};
 
@@ -28,7 +28,7 @@ def setConnectionTypes(connectionTypes):
 		elif thisType == 'UDP_PULL':
 			_connectionTypes[port] = None; #UdpPullHandler;
 		elif thisType == 'UDP_PUSH':
-			_connectionTypes[port] = None; #UdpPushHandler;
+			_connectionTypes[port] = UdpPushHandler;
 		elif thisType == 'MCAST_PUSH':
 			_connectionTypes[port] = None; #MulticastPushHandler;
 		else:

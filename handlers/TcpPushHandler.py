@@ -1,4 +1,3 @@
-#!/usr/local/bin/python3.3
 # -*-coding:Utf-8 -*
 from threading import Timer
 from handlers.Handler import *

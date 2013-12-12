@@ -1,5 +1,4 @@
-﻿#!/usr/local/bin/python3.3
-# -*-coding:Utf-8 -*
+﻿# -*-coding:Utf-8 -*
 import Catalog
 from handlers.Handler import *
 
@@ -34,5 +33,4 @@ class CatalogHandler(Handler):
 					self.socket.send(Catalog.asHttp())
 			else:
 				print(command, ' received, closing connection.')
-				self.socket.send(b'The connection is going down now.')
-				self.socket.close()
+				self.kill()
