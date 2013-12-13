@@ -1,7 +1,4 @@
 # -*-coding:Utf-8 -*
-
-import os
-
 """
 ResourceManager gets the images and loads them in memory whenever they are
 accessed via getFrame.
@@ -9,7 +6,7 @@ accessed via getFrame.
 
 _resources = { }
 _paths = { }
-CHUNK_SIZE = 5
+BATCH_SIZE = 5
 
 def addResource(mediaId, framePaths):
 	"""
@@ -24,15 +21,11 @@ def getFrame(mediaId, frameId):
 	frameId is an integer representing the offset in the frame list.
 	"""
 	if mediaId not in _resources or frameId not in _resources.get(mediaId, []):
-		_loadFramesChunk(mediaId, int(frameId / CHUNK_SIZE))
+		_loadFramesBatch(mediaId, int(frameId / BATCH_SIZE))
 		print("media {} (frames {} to {}) is now in cache."
-			.format(mediaId, frameId, frameId + CHUNK_SIZE))
-	image = {
-				'size'  : os.path.getsize(_paths[mediaId][frameId]),
-				'bytes' : _resources[mediaId][frameId],
-				'nextId': getNextFrameId(mediaId, frameId)
-			}
-	return image
+			.format(mediaId, frameId, frameId + BATCH_SIZE))
+
+	return (_resources[mediaId][frameId], getNextFrameId(mediaId, frameId))
 
 def getNextFrameId(mediaId, frameId):
 	"""
@@ -44,23 +37,19 @@ def getNextFrameId(mediaId, frameId):
 	else:
 		return 0
 
-def _loadFramesChunk(mediaId, chunkNumber):
+def _loadFramesBatch(mediaId, batchNumber):
 	"""
 	Loads all frames for the media mediaId (into _resources),
-	CHUNK_SIZE by CHUNK_SIZE (ex: 5 by 5).
+	BATCH_SIZE by BATCH_SIZE (ex: 5 by 5).
 	"""
-	# TODO : handle resource not found
-	imageList = []
-	index = chunkNumber * CHUNK_SIZE
-	i = index
-	for path in _paths[mediaId][index:index + CHUNK_SIZE]:
-		if mediaId not in _resources:
+	if mediaId not in _resources:
 			_resources[mediaId] = {}
+
+	# TODO : handle resource not found
+	index = batchNumber * BATCH_SIZE
+	i = index
+	for path in _paths[mediaId][index:index + BATCH_SIZE]:
 		imageFile = open(path, 'rb')
-		image = b''
-		byte = imageFile.read(1)
-		while b'' != byte:
-			image += byte
-			byte = imageFile.read(1)
-		_resources[mediaId][i] = image
+		# We load our images as bytestreams
+		_resources[mediaId][i] = bytes(imageFile.read())
 		i += 1
