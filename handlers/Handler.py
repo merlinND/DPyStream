@@ -20,9 +20,7 @@ class Handler(Thread):
 		self.receiveCommand()
 
 	def _interpretCommand(self, command):
-
-		# TODO : fix connection closing
-		if END_COMMAND == command:
+		if END_COMMAND == command[:len(END_COMMAND)]:
 			# Empty line necessary
 			print("Waiting for blank line...")
 			if "" == self.commandSocket.nextLine():
