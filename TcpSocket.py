@@ -64,7 +64,7 @@ class TcpSocket:
 				totalSent += sent
 		self._blocked = False
 
-	def nextLine(self, receiveBuffer=4, delimiter="\r\n"):
+	def nextLine(self, receiveBuffer=2, delimiter="\r\n"):
 		self._blocked = True
 		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
