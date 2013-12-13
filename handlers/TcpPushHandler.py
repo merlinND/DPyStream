@@ -59,26 +59,22 @@ class TcpPushHandler(TcpHandler):
 		Interpret the command received from the client and respond on the dataSocket.
 		"""
 
-		print("TcpPushHandler trying to interpret", command)
-
 		# The GET command could only mean "establish connection"
 		if GET_COMMAND == command[:len(GET_COMMAND)]:
 			if None == self._dataSocket:
-				self._establishMediaConnection()
-			
-		if START_COMMAND == command[:len(START_COMMAND)]:
+				self._establishMediaConnection()	
+		elif START_COMMAND == command[:len(START_COMMAND)]:
 			# Empty line necessary
 			print("Waiting for blank line...")
 			if "" == self.commandSocket.nextLine():
 				self.startPushing()
-
-		if PAUSE_COMMAND == command[:len(PAUSE_COMMAND)]:
+		elif PAUSE_COMMAND == command[:len(PAUSE_COMMAND)]:
 			# Empty line necessary
 			print("Waiting for blank line...")
 			if "" == self.commandSocket.nextLine():
 				self.stopPushing()
 
+		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
-			# If we couldn't recognized this command, maybe one of the parent class can
 			TcpHandler._interpretCommand(self, command)
 

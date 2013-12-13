@@ -4,7 +4,7 @@ Type: BMP
 Address: 127.0.0.1
 Port: 8088
 Protocol: TCP_PUSH
-IPS: 1.5
+IPS: 4
 resources/1/img1.bmp
 resources/1/img2.bmp
 resources/1/img3.bmp

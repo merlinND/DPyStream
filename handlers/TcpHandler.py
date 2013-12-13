@@ -20,6 +20,7 @@ class TcpHandler(Handler):
 		Handler.__init__(self)
 		self.commandSocket = commandSocket
 		self._dataSocket = None
+		self._clientIp = None
 		self._clientListenPort = None
 
 		# TODO : these properties should come from the catalog
@@ -63,34 +64,31 @@ class TcpHandler(Handler):
 				frameId = int(command[len(GET_COMMAND):])
 				# Empty line necessary
 				print("Waiting for blank line...")
+				# TODO : fix waiting for blank line timing out ?
 				if "" == self.commandSocket.nextLine():
 					# If we were asked for a specific frameId (otherwise just send the next one)
 					if (NEXT_IMG != frameId):
 						self._currentFrameId = frameId
 
 					self._sendCurrentFrame()
+		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
-			# If we couldn't recognized this command, maybe one of the parent class can
 			Handler._interpretCommand(self, command)
 
 	def _establishMediaConnection(self):
 		"""
 		Connects the dataSocket to the port given via the commandSocket
 		"""
-
-		# We establish a new connection to the client to send the requested media
-		self._dataSocket = TcpSocket()
-	
-		# Read the client listening port from the rest of the command		
+		# Read the client listening port from the rest of the command
 		command = self.commandSocket.nextLine()
-		print(command)
-		# TODO : fix waiting for blank line timing out ?
-		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)] and "" == self.commandSocket.nextLine():
+		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]\
+		   and "" == self.commandSocket.nextLine():
+			(self._clientIp, unused) = self.commandSocket.getIp()
 			self._clientListenPort = int(command[len(LISTEN_COMMAND):])
-
+			# We establish a new connection to the client to send the requested media
 			# TODO : handle "connection refused" gracefully
-			(self.clientIp, unused) = self.commandSocket.getIp()
-			self._dataSocket.connect(self.clientIp, self._clientListenPort)
+			self._dataSocket = TcpSocket()
+			self._dataSocket.connect(self._clientIp, self._clientListenPort)
 
 	def _prepareMessage(self, frameId, frameContent):
 		"""
