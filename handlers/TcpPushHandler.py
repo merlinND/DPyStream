@@ -1,99 +1,84 @@
 # -*-coding:Utf-8 -*
 from threading import Timer
-from handlers.Handler import *
-import ResourceManager
+from handlers.TcpHandler import *
 
-# TODO : make this constant globally accessible across the application
-ENDL = b'\n\r'
+# Vocabulary for TCP_PUSH requests
+START_COMMAND = "START"
+PAUSE_COMMAND = "PAUSE"
 
-class TcpPushHandler(Handler):
+class TcpPushHandler(TcpHandler):
 	"""
 	This class is able to manage connections from clients who are interested in getting a media via protocol TCP_PUSH.
 	"""
 	
-	def __init__(self, socket):
+	def __init__(self, commandSocket):
 		"""
-		The parameter socket holds the TCP control connection with the client. The client will send commands via this connection and this is the handler's job to interpret them.
+		The parameter 'socket' holds the TCP control connection with the client. The client will send commands via this connection and this is the handler's job to interpret them.
 		"""
-		Handler.__init__(self)
-		# TODO : put most of the logic back up in the Handler parent class
-		self.socket = socket
-
-		# TODO : these properties should come from the catalog
+		TcpHandler.__init__(self, commandSocket)
+		
 		self._mediaId = 1
 		self._currentFrameId = 0
 		self._interval = 1 # Interval in seconds (replace with framerate from catalog?)
 		
 		# We create a new timer (no autostart)
 		self._isTimerRunning = False
-		self.restartTimer(False)
-		
-	def run(self):
-		print("Running the new thread")
-		self.receiveCommand()
-	
-	def kill(self):
-		self.interruptFlag = True
-		self.stopPushing()
-		# We inform the socket that we want it to commit suicide
-		self.socket.kill()
+		self._pushTimer = None
 
-	def receiveCommand(self):
-		command = b''
-		while command != b'e' and not self.interruptFlag:
-			# TODO: use common receiveCommand method from the parent Handler class instead
-			command = self.socket.receive(1)
-			
-			if command != b'e':
-				ignoredCharacters = (b'\n', b'\r', b'')
-				if command not in ignoredCharacters:
-					print('Command received, we should interpret it.')
-					# TODO : create a new connection to the client, on the port it specified (content chanel)
-					self.startPushing()
-			else:
-				print(command, ' received, closing connection.')
-				self.socket.send(b'The connection is going down now.')
-				self.socket.close()
+	def kill(self):
+		self.stopPushing()
+		TcpHandler.kill(self)
 
 	def startPushing(self):
-		if not self._isTimerRunning:
-			self._pushTimer.start()
-			self._isTimerRunning = True
+		self._pushTimer = Timer(self._interval, self._sendCurrentFrame)
+		self._pushTimer.start()
+		self._isTimerRunning = True
 
 	def restartTimer(self, autostart):
 		if self._isTimerRunning:
 			self._pushTimer.cancel()
-		self._pushTimer = Timer(self._interval, self.sendNextFrame)
-		if autostart:
-			self._pushTimer.start()
-		self._isTimerRunning = autostart
+
+		self.startPushing()
 
 	def stopPushing(self):
-		self._pushTimer.cancel()
+		if self._pushTimer is not None:
+			self._pushTimer.cancel()
 		self._isTimerRunning = False
 
-	def sendNextFrame(self):
-		# The timer just timed out (because we were just called)
+	def _sendCurrentFrame(self):
+		# The timer just timed out (thus this function was called)
 		self._isTimerRunning = False
 
-		frameId = self._currentFrameId
-		(frame, self._currentFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
-		frame = bytes(frame)
-
-		# TODO : actually send the frame to the client *on the content chanel*, not the control chanel
-		print("Sending frame {} next frame will be #{}.".format(frameId, self._currentFrameId))
+		TcpHandler._sendCurrentFrame(self)
 
 		# We restart the timer
 		self.restartTimer(True)
 
-	def prepareMessage(self, frameId, frameContent):
+	def _interpretCommand(self, command):
 		"""
-		This function takes an image and adds surrounding information so that the client applications can interpret it.
-		It returns a full message ready to be sent to the client via socket, containing:
-		- This frame's id (followed by endline)
-		- This frame's content size (followed by endline)
-		- The actual frame content
+		Interpret the command received from the client and respond on the dataSocket.
 		"""
-		return bytes(str(frameId), 'Utf-8') + ENDL\
-			 + bytes(str(len(frameContent)), 'Utf-8') + ENDL\
-			 + frameContent
+
+		print("TcpPushHandler trying to interpret", command)
+
+		# The GET command could only mean "establish connection"
+		if GET_COMMAND == command[:len(GET_COMMAND)]:
+			if None == self._dataSocket:
+				self._establishMediaConnection()
+			
+		if START_COMMAND == command[:len(START_COMMAND)]:
+			# Empty line necessary
+			print("Waiting for blank line...")
+			if "" == self.commandSocket.nextLine():
+				self.startPushing()
+
+		if PAUSE_COMMAND == command[:len(PAUSE_COMMAND)]:
+			# Empty line necessary
+			print("Waiting for blank line...")
+			if "" == self.commandSocket.nextLine():
+				self.stopPushing()
+
+		else:
+			# If we couldn't recognized this command, maybe one of the parent class can
+			TcpHandler._interpretCommand(self, command)
+
