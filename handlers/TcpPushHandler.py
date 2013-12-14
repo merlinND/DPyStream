@@ -13,7 +13,8 @@ class TcpPushHandler(TcpHandler):
 	
 	def __init__(self, commandSocket):
 		"""
-		The parameter 'socket' holds the TCP control connection with the client. The client will send commands via this connection and this is the handler's job to interpret them.
+		The parameter 'commandSocket' holds the TCP control connection with the client.
+		The client will send commands via this connection and this is the handler's job to interpret them.
 		"""
 		TcpHandler.__init__(self, commandSocket)
 		

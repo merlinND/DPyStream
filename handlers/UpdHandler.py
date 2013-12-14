@@ -2,15 +2,15 @@
 
 import ResourceManager
 from handlers.Handler import *
-from TcpSocket import *
+from UdpSocket import *
 
 # Common vocabulary for TCP requests
 LISTEN_COMMAND = "LISTEN_PORT "
 NEXT_IMG = -1
 
-class TcpHandler(Handler):
+class UdpHandler(Handler):
 	"""
-	This class implements the common elements for the TCP_PULL and TCP_PUSH connections.
+	This class implements the common elements for the UDP_PULL and UDP_PUSH connections.
 	"""
 
 	def __init__(self, commandSocket):
@@ -22,6 +22,7 @@ class TcpHandler(Handler):
 		self._dataSocket = None
 		self._clientIp = None
 		self._clientListenPort = None
+		self._fragmentSize = None
 
 		# TODO : these properties should come from the catalog
 		self._mediaId = 5
@@ -46,10 +47,10 @@ class TcpHandler(Handler):
 			command = self.commandSocket.nextLine()
 			print('"{}" received'.format(command))
 
-			if None == command:
-				continue
-			else:
-				self._interpretCommand(command)
+			#if None == command:
+			#	continue
+			#else:
+			#	self._interpretCommand(command)
 
 	def _interpretCommand(self, command):
 		"""
