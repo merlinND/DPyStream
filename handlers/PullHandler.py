@@ -17,10 +17,12 @@ class PullHandler(Handler):
 	"""
 	
 	def __init__(self, commandSocket):
+	def __init__(self, commandSocket, protocol):
 		"""
 		Initializes all attributes
 		"""
 		Handler.__init__(self, self.SocketType.TCP)
+		Handler.__init__(self, protocol)
 		self.commandSocket = commandSocket
 		self.dataSocket = None
 		self.mediaId = None
@@ -29,6 +31,7 @@ class PullHandler(Handler):
 		
 	def run(self):
 		print("{}PullHandler ready.".format(self.socketType))
+		print("{}PullHandler ready.".format(self.protocol))
 		self.receiveCommand()
 	
 	def kill(self):
