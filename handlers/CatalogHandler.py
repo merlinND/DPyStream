@@ -8,7 +8,7 @@ class CatalogHandler(Handler):
 	"""
 	
 	def __init__(self, socket):
-		Handler.__init__(self)
+		Handler.__init__(self, self.SocketType.TCP)
 		self.socket = socket
 		
 	def run(self):

@@ -4,12 +4,18 @@ HandlerFactory is responsible to deliver an instance of the right Handler class 
 Indeed, each media parsed by Catalog has its own connection type (TCP_PULL, UDP_PUSH, etc) and its own listening port. Thus for each connection port, we must use an appropriate Handler object.
 Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerFactory.createAppropriateHandler(42000) should thus return a new instance of UdpPullHandler.
 """
+from handlers.Handler import *
 from handlers.CatalogHandler import *
-from handlers.TcpPullHandler import *
+from handlers.PullHandler import *
 from handlers.TcpPushHandler import *
 from handlers.UdpPushHandler import *
 
 _connectionTypes = {};
+
+def enum(**enums):
+	return type('Enum', (), enums)
+
+Protocol = enum(UDP = 'Udp', TCP = 'Tcp', MCAST = 'MultiCast')
 
 def setConnectionTypes(connectionTypes):
 	"""
@@ -20,19 +26,23 @@ def setConnectionTypes(connectionTypes):
 		thisType = connectionTypes[port]
 
 		if thisType == 'CATALOG':
-			_connectionTypes[port] = CatalogHandler;
+			_connectionTypes[port] = (CatalogHandler,	Protocol.TCP);
 		elif thisType == 'TCP_PULL':
-			_connectionTypes[port] = TcpPullHandler;
+			_connectionTypes[port] = (PullHandler,		Protocol.TCP);
 		elif thisType == 'TCP_PUSH':
-			_connectionTypes[port] = TcpPushHandler;
+			_connectionTypes[port] = (TcpPushHandler,	Protocol.TCP);
 		elif thisType == 'UDP_PULL':
-			_connectionTypes[port] = None; #UdpPullHandler;
+			_connectionTypes[port] = (PullHandler,		Protocol.UDP);
 		elif thisType == 'UDP_PUSH':
-			_connectionTypes[port] = UdpPushHandler;
+			_connectionTypes[port] = (None, Protocol.UDP); #UdpPushHandler;
 		elif thisType == 'MCAST_PUSH':
-			_connectionTypes[port] = None; #MulticastPushHandler;
+			_connectionTypes[port] = (None, Protocol.MCAST); #MulticastPushHandler;
 		else:
 			raise Exception("The connection type {} is not supported.".format(thisType))
+
+def getProtocol(port):
+	_, protocol = _connectionTypes[port]
+	return protocol
 
 def createAppropriateHandler(port, socket):
 	"""
@@ -40,7 +50,8 @@ def createAppropriateHandler(port, socket):
 	Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerFactory.createAppropriateHandler(42000) should thus return a new instance of UdpPullHandler.
 	"""
 	try:
-	 	return _connectionTypes[port](socket)
+		handler = _connectionTypes[port]
+		return handler(socket)
 	except KeyError:
 		# TODO : fail gracefully
 		raise Exception("No connection is available on this port.")

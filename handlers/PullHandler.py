@@ -11,7 +11,7 @@ LISTEN_COMMAND = "LISTEN_PORT "
 NEXT_IMG = -1
 END_LINE = "\r\n"
 
-class TcpPullHandler(Handler):
+class PullHandler(Handler):
 	"""
 	This class is able to manage connections from clients who are interested in getting a TCP Pull connection.
 	"""
@@ -20,7 +20,7 @@ class TcpPullHandler(Handler):
 		"""
 		Initializes all attributes
 		"""
-		Handler.__init__(self)
+		Handler.__init__(self, self.SocketType.TCP)
 		self.commandSocket = commandSocket
 		self.dataSocket = None
 		self.mediaId = None
@@ -28,7 +28,7 @@ class TcpPullHandler(Handler):
 		self.listenPort = None
 		
 	def run(self):
-		print("TcpPullHandler ready.")
+		print("{}PullHandler ready.".format(self.socketType))
 		self.receiveCommand()
 	
 	def kill(self):
