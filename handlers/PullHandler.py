@@ -16,12 +16,10 @@ class PullHandler(Handler):
 	This class is able to manage connections from clients who are interested in getting a TCP Pull connection.
 	"""
 	
-	def __init__(self, commandSocket):
 	def __init__(self, commandSocket, protocol):
 		"""
 		Initializes all attributes
 		"""
-		Handler.__init__(self, self.SocketType.TCP)
 		Handler.__init__(self, protocol)
 		self.commandSocket = commandSocket
 		self.dataSocket = None
@@ -30,7 +28,6 @@ class PullHandler(Handler):
 		self.listenPort = None
 		
 	def run(self):
-		print("{}PullHandler ready.".format(self.socketType))
 		print("{}PullHandler ready.".format(self.protocol))
 		self.receiveCommand()
 	
