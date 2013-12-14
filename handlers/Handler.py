@@ -1,34 +1,18 @@
 ﻿# -*-coding:Utf-8 -*
 from threading import Thread
 
+def enum(**enums):
+	return type('Enum', (), enums)
+
+Protocol = enum(UDP = 'Udp', TCP = 'Tcp', MCAST = 'MultiCast')
+
 class Handler(Thread):
 
-	def __init__(self):
+	def __init__(self, protocol):
 		Thread.__init__(self)
+		self.protocol = protocol
 		self.interruptFlag = False
-	
-	def kill(self):
-		"""
-		Properly closes all sockets and interrupts the thread
-		"""
-		self.interruptFlag = True
-		# We inform the sockets that we want them to commit suicide
-		# Note: dataSocket must be closed first as the client closes it first
-		if None != self.dataSocket:
-			self.dataSocket.kill()
-		self.commandSocket.kill()
-
-	def __init__(self, commandSocket):
-		"""
-		Initializes all attributes
-		"""
-		Handler.__init__(self, self.Protocol.TCP)
-		self.commandSocket = commandSocket
-		self.dataSocket = None
-		self.mediaId = None
-		self.currentImageId = 0
-		self.clientListenPort = None
+		print("Initialized", self.protocol, "Handler.")
 
 	def run(self):
-		print("Generic Handler ready.")
 		self.receiveCommand()

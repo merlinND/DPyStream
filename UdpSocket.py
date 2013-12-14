@@ -24,7 +24,6 @@ class UdpSocket:
 		# These options allow to interrupt the socket during a recv or send
 		self._interruptFlag = False
 		self._selectTimer = 3
-		self._buffer = ""
 
 		self.host = None
 		self.port = None
@@ -55,14 +54,16 @@ class UdpSocket:
 					raise RuntimeError("The TCP Socket connection was broken while trying to send.")
 				totalSent += sent
 
-	def nextLine(self, receiveBuffer=4, delimiter="\r\n"):
+	def nextLine(self, receiveBuffer=4096, delimiter="\r\n"):
+		dataBuffer = ""
+		data = b''
 		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
 			if readyToRead:
-				data = self.s.recvfrom(receiveBuffer)
-				self._buffer += str(data, 'Utf-8')
-			if self._buffer.find(delimiter) != -1:
-				(line, self._buffer) = self._buffer.split(delimiter, 1)
+				data, _ = self.s.recvfrom(receiveBuffer)
+				dataBuffer += str(data, 'Utf-8')
+			if dataBuffer.find(delimiter) != -1:
+				(line, dataBuffer) = dataBuffer.split(delimiter, 1)
 				return line
 
 	def receive(self, n = 1):

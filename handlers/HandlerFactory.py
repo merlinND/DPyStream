@@ -12,11 +12,6 @@ from handlers.UdpPushHandler import *
 
 _connectionTypes = {};
 
-def enum(**enums):
-	return type('Enum', (), enums)
-
-Protocol = enum(UDP = 'Udp', TCP = 'Tcp', MCAST = 'MultiCast')
-
 def setConnectionTypes(connectionTypes):
 	"""
 	connectionTypes should be a dictionnary associating each used port to its connection type, expressed as a string ('TCP_PULL', 'UDP_PULL', etc).
@@ -30,13 +25,13 @@ def setConnectionTypes(connectionTypes):
 		elif thisType == 'TCP_PULL':
 			_connectionTypes[port] = (PullHandler,		Protocol.TCP);
 		elif thisType == 'TCP_PUSH':
-			_connectionTypes[port] = (TcpPushHandler,	Protocol.TCP);
+			_connectionTypes[port] = (PullHandler,		Protocol.TCP);
 		elif thisType == 'UDP_PULL':
 			_connectionTypes[port] = (PullHandler,		Protocol.UDP);
 		elif thisType == 'UDP_PUSH':
-			_connectionTypes[port] = (None, Protocol.UDP); #UdpPushHandler;
+			_connectionTypes[port] = (PullHandler, 		Protocol.UDP); #UdpPushHandler;
 		elif thisType == 'MCAST_PUSH':
-			_connectionTypes[port] = (None, Protocol.MCAST); #MulticastPushHandler;
+			_connectionTypes[port] = (PullHandler, 		Protocol.MCAST); #MulticastPushHandler;
 		else:
 			raise Exception("The connection type {} is not supported.".format(thisType))
 
@@ -50,8 +45,8 @@ def createAppropriateHandler(port, socket):
 	Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerFactory.createAppropriateHandler(42000) should thus return a new instance of UdpPullHandler.
 	"""
 	try:
-		handler = _connectionTypes[port]
-		return handler(socket)
+		handler, protocol = _connectionTypes[port]
+		return handler(socket, protocol)
 	except KeyError:
 		# TODO : fail gracefully
 		raise Exception("No connection is available on this port.")

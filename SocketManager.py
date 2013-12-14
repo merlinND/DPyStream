@@ -3,6 +3,7 @@ from threading import Thread
 import select
 
 from handlers import HandlerFactory
+from handlers import Handler
 from TcpSocket import *
 from UdpSocket import *
 
@@ -12,45 +13,53 @@ class SocketManager(Thread):
 	a new socket (and associated thread) for each client.
 	"""
 
-	def __init__(self, host = '127.0.0.1', port = 15000):
+	def __init__(self, host, port):
 		Thread.__init__(self)
 		self.interruptFlag = False
 
-		self.serverSocket = None
 		self._selectTimer = 3
 
-		# By default, the socket is bound to 127.0.0.1 on port 15000
 		self._host = host
 		self._listeningPort = port
 		self._protocol = HandlerFactory.getProtocol(port)
 
-		print('Will listen on', host, ':', port)
+		print('Will listen on', host, ':', port, '(', self._protocol, ')')
 		# We will maintain a list of all active connections
 		self.clients = []
-		
+
 	def run(self):
+		clientSocket = None
+		if   Handler.Protocol.TCP == self._protocol:
+			clientSocket = self.startTcpHandler()
+		elif Handler.Protocol.UDP == self._protocol:
+			clientSocket = self.startUdpHandler()
+
+	def startTcpHandler(self):
+		serverSocket = TcpSocket()
+		serverSocket.listen(self._host, self._listeningPort)
+		clientSocket = None
+		# One TCP Handler per client
 		while not self.interruptFlag:
-			if HandlerFactory.Protocol.TCP == self._protocol:
-				self.serverSocket = TcpSocket()
+			clientSocket = serverSocket.accept()
 
-				# Thanks to select.select, the read operation regularly times out
-				(readyToRead,rw,err) = select.select([self.serverSocket.s],[],[], self._selectTimer)
-				if readyToRead:
-					clientSocket = self.serverSocket.accept()
-			elif HandlerFactory.Protocol.UDP == self._protocol:
-				clientSocket = UdpSocket()
-				clientSocket.listen("", self._listeningPort)
+			self.startHandler(clientSocket)
 
-			print('Listening on', self._host, ':', self._listeningPort, "({})".format(self._protocol))
+	def startUdpHandler(self):
+		# One UDP Handler for all of the clients
+		clientSocket = UdpSocket()
+		clientSocket.listen(self._host, self._listeningPort)
 
-			# At each new connection, we create a new handler, which runs in a new thread
-			# TODO : use a HandlerFactory to instanciate the right kind of handler depending on the type of socket that we are managing
-			clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
+		self.startHandler(clientSocket)
 
-			self.clients.append(clientThread)
-			clientThread.start()
-			print("Connection accepted (connection #", len(self.clients), ").")
-	
+	def startHandler(self, clientSocket):
+		clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
+
+		self.clients.append(clientThread)
+		clientThread.start()
+
+		print("Handler #{} started.".format(len(self.clients)))
+		print('Listening on', self._host, ':', self._listeningPort, "({})".format(self._protocol))
+
 	def kill(self):
 		print("Closing port {} : killing {} client threads (will go down in {} seconds or less).".format(self._listeningPort, len(self.clients), self._selectTimer))
 

@@ -4,7 +4,7 @@ from handlers.Handler import *
 from TcpSocket import *
 import ResourceManager
 
-# TODO move to another file (protocol)
+# Pull Protocol
 GET_COMMAND = "GET "
 END_COMMAND = "END"
 LISTEN_COMMAND = "LISTEN_PORT "
