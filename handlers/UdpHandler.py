@@ -10,16 +10,19 @@ NEXT_IMG = -1
 
 class UdpHandler(Handler):
 	"""
-	This class implements the common elements for the UDP_PULL and UDP_PUSH connections.
+	This class implements the common elements for the UDP_PULL
+	and UDP_PUSH connections.
 	"""
 
-	def __init__(self, commandSocket):
+	def __init__(self, commandSocket, protocol):
 		"""
 		Initializes all attributes
 		"""
-		Handler.__init__(self)
+		print("UdpHandler ready")
+		Handler.__init__(self, protocol)
 		self.commandSocket = commandSocket
-		self._dataSocket = None
+		self.dataSocket = None
+
 		self._clientIp = None
 		self._clientListenPort = None
 		self._fragmentSize = None
@@ -33,33 +36,36 @@ class UdpHandler(Handler):
 		Properly closes all sockets and interrupts the thread.
 		"""
 		self.interruptFlag = True
-		# We inform the sockets that we want them to commit suicide
-		# Note: dataSocket must be closed first as the client closes the connection from its side
-		if None != self._dataSocket:
-			self._dataSocket.kill()
+		# We inform the sockets that we want them to commit
+		# suicide
+		# Note: dataSocket must be closed first as the client
+		# closes the connection from its side
+		if None != self.dataSocket:
+			self.dataSocket.kill()
 		self.commandSocket.kill()
 
 	def receiveCommand(self):
 		"""
-		Receive a command from the client on the control socket and interpret it.
+		Receive a command from the client on the control socket
+		and interpret it.
 		"""
 		while not self.interruptFlag:
 			command = self.commandSocket.nextLine()
 			print('"{}" received'.format(command))
-
-			#if None == command:
-			#	continue
-			#else:
-			#	self._interpretCommand(command)
+			if None == command:
+				continue
+			else:
+				self._interpretCommand(command)
 
 	def _interpretCommand(self, command):
 		"""
-		Interpret the command received from the client and respond on the dataSocket.
+		Interpret the command received from the client and
+		respond on the dataSocket.
 		"""
 
 		# The GET command could mean either "establish connection" or "send a frame"
 		if GET_COMMAND == command[:len(GET_COMMAND)]:
-			if None == self._dataSocket:
+			if None == self.dataSocket:
 				self._establishMediaConnection()
 			else:
 				frameId = int(command[len(GET_COMMAND):])
@@ -67,12 +73,14 @@ class UdpHandler(Handler):
 				print("Waiting for blank line...")
 				# TODO : fix waiting for blank line timing out ?
 				if "" == self.commandSocket.nextLine():
-					# If we were asked for a specific frameId (otherwise just send the next one)
+					# If we were asked for a specific frameId
+					# (otherwise just send the next one)
 					if (NEXT_IMG != frameId):
 						self._currentFrameId = frameId
 
 					self._sendCurrentFrame()
-		# If we couldn't recognized this command, maybe one of the parent class can
+		# If we couldn't recognized this command, maybe one of
+		# the parent class can
 		else:
 			Handler._interpretCommand(self, command)
 
@@ -80,22 +88,27 @@ class UdpHandler(Handler):
 		"""
 		Connects the dataSocket to the port given via the commandSocket
 		"""
-		# Read the client listening port from the rest of the command
+		# Read the client listening port from the
+		# rest of the command
 		command = self.commandSocket.nextLine()
 		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]\
 		   and "" == self.commandSocket.nextLine():
 			(self._clientIp, unused) = self.commandSocket.getIp()
 			self._clientListenPort = int(command[len(LISTEN_COMMAND):])
-			# We establish a new connection to the client to send the requested media
+			# We establish a new connection to the client to
+			# send the requested media
 			# TODO : handle "connection refused" gracefully
-			self._dataSocket = TcpSocket()
-			self._dataSocket.connect(self._clientIp, self._clientListenPort)
+			self.dataSocket = TcpSocket()
+			self.dataSocket.connect(self._clientIp, self._clientListenPort)
 
 	def _prepareMessage(self, frameId, frameContent):
 		"""
-		This function takes an image and adds surrounding information so that the client applications can interpret it.
+		This function takes an image and adds surrounding
+		information so that the client applications can
+		interpret it.
 
-		It returns a full message ready to be sent to the client via socket, containing:
+		It returns a full message ready to be sent to the client
+		via socket, containing:
 		- This frame's id (followed by endline)
 		- This frame's content size (followed by endline)
 		- The actual frame content
@@ -118,6 +131,6 @@ class UdpHandler(Handler):
 
 		print("Sending frame {} next frame will be #{}.".format(self._currentFrameId, nextFrameId))
 		message = self._prepareMessage(self._currentFrameId, image)
-		self._dataSocket.send(message)
+		self.dataSocket.send(message)
 
 		self._currentFrameId = nextFrameId

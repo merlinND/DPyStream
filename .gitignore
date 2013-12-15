@@ -6,3 +6,4 @@ __pycache__/*
 # Resource files #
 ##################
 resources/*
+handlers/PullHandler.py

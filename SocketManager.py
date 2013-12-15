@@ -3,47 +3,83 @@ from threading import Thread
 import select
 
 from handlers import HandlerFactory
+from handlers import Handler
 from TcpSocket import *
+from UdpSocket import *
+from UdpAccepter import *
 
 class SocketManager(Thread):
 	"""
-	HttpAcceptHandler represents the thread receiving the connection requests and creating
+	SocketManager represents the thread receiving the connection requests and creating
 	a new socket (and associated thread) for each client.
 	"""
-	
-	def __init__(self, host = '127.0.0.1', port = 15000):
+
+	def __init__(self, host, port):
 		Thread.__init__(self)
 		self.interruptFlag = False
 
-		self.serverSocket = TcpSocket()
 		self._selectTimer = 3
-		self._listeningPort = port
 
-		# By default, the socket is bound to 127.0.0.1 on port 15000
-		self.serverSocket.listen(host, port)
-		print('Listening on', host, ':', port)
+		self._host = host
+		self._listeningPort = port
+		self._protocol = HandlerFactory.getProtocol(port)
+
+		print('Will listen on', host, ':', port, '(', self._protocol, ')')
 		# We will maintain a list of all active connections
 		self.clients = []
-		
-	def run(self):
-		while not self.interruptFlag:
-			# Thanks to select.select, the read operation regularly times out
-			(readyToRead,rw,err) = select.select([self.serverSocket.s],[],[], self._selectTimer)
-			if readyToRead:
-				clientSocket = self.serverSocket.accept()
-				# At each new connection, we create a new handler, which runs in a new thread
-				# TODO : use a HandlerFactory to instanciate the right kind of handler depending on the type of socket that we are managing
-				clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
+		self.accepter = None
 
-				self.clients.append(clientThread)
-				clientThread.start()
-				print("Connection accepted (connection #", len(self.clients), ").")
-	
+	def run(self):
+		clientSocket = None
+		if   Handler.Protocol.TCP == self._protocol:
+			clientSocket = self.startTcpHandler()
+		elif Handler.Protocol.UDP == self._protocol:
+			clientSocket = self.startUdpHandler()
+
+	def startTcpHandler(self):
+		serverSocket = TcpSocket()
+		serverSocket.listen(self._host, self._listeningPort)
+		clientSocket = None
+		# One TCP Handler per client
+		while not self.interruptFlag:
+			(readyToRead,rw,err) = select.select(				\
+								   [serverSocket.s],[],[],	\
+								   self._selectTimer)
+			if readyToRead:
+				clientSocket = serverSocket.accept()
+
+				self.startHandler(clientSocket)
+
+	def startUdpHandler(self):
+		self.accepter = UdpAccepter()
+		self.accepter.listen(self._host, self._listeningPort)
+
+		while not self.interruptFlag:
+			(readyToRead,rw,err) = select.select(				\
+								   [self.accepter.commonSocket],\
+								   [],[], self._selectTimer)
+			if readyToRead:
+				# One UDP socket per client, knowing its client
+				clientSocket = self.accepter.accept()
+				if None != clientSocket:
+					self.startHandler(clientSocket)
+
+	def startHandler(self, clientSocket):
+		clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
+
+		self.clients.append(clientThread)
+		clientThread.start()
+
+		print("Handler #{} started.".format(len(self.clients)))
+		print('Listening on', self._host, ':', self._listeningPort, "({})".format(self._protocol))
+
 	def kill(self):
 		print("Closing port {} : killing {} client threads (will go down in {} seconds or less).".format(self._listeningPort, len(self.clients), self._selectTimer))
 
 		# TODO : sometimes client connections go down even if we do not kill them. Purge the clients list regularly ?
 
+		if None != self.accepter:
+			self.accepter.kill()
 		i = 0
 		for client in self.clients:
 			# If this thread is still running, we kindly ask it to die

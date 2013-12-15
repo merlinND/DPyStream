@@ -4,12 +4,13 @@ from handlers.Handler import *
 
 class CatalogHandler(Handler):
 	"""
-	This class is able to manage connections from clients who are interested in getting the catalog.
+	This class is able to manage connections from clients who are
+	interested in getting the catalog.
 	"""
 	
-	def __init__(self, socket):
-		Handler.__init__(self)
-		self.socket = socket
+	def __init__(self, commandSocket, protocol):
+		Handler.__init__(self, protocol)
+		self.commandSocket = commandSocket
 		
 	def run(self):
 		print("Running the new thread")
@@ -17,20 +18,22 @@ class CatalogHandler(Handler):
 	
 	def kill(self):
 		self.interruptFlag = True
-		# We inform the socket that we want it to commit suicide
-		self.socket.kill()
+		# We inform the commandSocket that we want it to commit
+		# suicide
+		self.commandSocket.kill()
 
 	def receiveCommand(self):
 		command = b''
 		while command != b'e' and not self.interruptFlag:
-			# TODO: send the catalog only one per message received (not per single caracter)
-			command = self.socket.receive(1)
+			# TODO: send the catalog only one per message
+			# received (not per single caracter)
+			command = self.commandSocket.receive(1)
 			
 			if command != b'e':
 				ignoredCharacters = (b'\n', b'\r', b'')
 				if command not in ignoredCharacters:
 					print(command, ' received, sending catalog.')
-					self.socket.send(Catalog.asHttp())
+					self.commandSocket.send(Catalog.asHttp())
 			else:
 				print(command, ' received, closing connection.')
 				self.kill()

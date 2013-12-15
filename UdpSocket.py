@@ -4,50 +4,41 @@ import select
 
 class UdpSocket:
 	"""
-	UdpSocket implements our high level methods to send and receive information.
+	UdpSocket implements our high level methods to send and
+	receive information.
 	"""
 
-	def enum(**enums):
-		return type('Enum', (), enums)
+	def __init__(self, s, client):
+		# Which client is allowed to communicate
+		# (others are ignored)
+		self.client = client
 
-	Usage = enum(SENDING = 0, RECEIVING = 1)
+		# Given by the UdpAccepter
+		self.s = s
 
-	def __init__(self, maxConnections = 5, s = None):
-		if s is None:
-			self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		else:
-			self.s = s
-		# These options enable the same address and port to be reused quickly
-		# (for example, in two consecutive runs of the script)
-		self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.maxConnections = maxConnections
-		# These options allow to interrupt the socket during a recv or send
-		self._interruptFlag = False
+		# These options allow to interrupt the socket during a
+		# recv or send
+		self.interruptFlag = False
 		self._selectTimer = 3
 		self._buffer = ""
 
-		self.host = None
-		self.port = None
-	
-	def listen(self, host, port):
-		self.host = host
-		self.port = port
-		self.s.bind((host, port))
-
 	def _close(self):
-		self.s.sendto(b'The connection is going down NOW.\r\n', (self.host, self.port))
-#		self.s.sendto(b'Bye.\r\n', (self.host, self.port))
+		self.send(b'The connection is going down NOW.\r\n')
+		# No need to close a Udp Socket
 	
 	def kill(self):
-		self._interruptFlag = True
-		# No need to close a Udp Socket
+		self.interruptFlag = True
+		self._close()
+
+	def receive(self, message):
+		self._buffer += str(message, 'Utf-8')
 
 	def send(self, message):
 		totalSent = 0
 		if str == type(message):
 			message = message.encode('Utf-8')
 
-		while totalSent < len(message) and not self._interruptFlag:
+		while totalSent < len(message) and not self.interruptFlag:
 			(rr,readyToWrite,err) = select.select([],[self.s],[], self._selectTimer)
 			if readyToWrite:
 				sent = self.s.sendto(message[totalSent:], (self.host, self.port))
@@ -55,23 +46,9 @@ class UdpSocket:
 					raise RuntimeError("The UDP Socket connection was broken while trying to send.")
 				totalSent += sent
 
-	def nextLine(self, receiveBuffer=4, delimiter="\r\n"):
-		while not self._interruptFlag:
-			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
-			if readyToRead:
-				data = self.s.recvfrom(receiveBuffer)
-				self._buffer += str(data, 'Utf-8')
+	def nextLine(self, receiveBuffer=4096, delimiter="\r\n"):
+		while not self.interruptFlag:
 			if self._buffer.find(delimiter) != -1:
-				(line, self._buffer) = self._buffer.split(delimiter, 1)
+				(line, self._buffer) = self._buffer.split(\
+								   delimiter, 1)
 				return line
-
-	def receive(self, n = 1):
-		message = b''
-		while len(message) < n and not self._interruptFlag:
-			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
-			if readyToRead:
-				chunk = self.s.recv(n)
-				if chunk == b'':
-					raise RuntimeError("The UDP Socket connection was broken while trying to receive.")
-				message += chunk
-		return message

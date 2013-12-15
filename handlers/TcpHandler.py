@@ -13,11 +13,11 @@ class TcpHandler(Handler):
 	This class implements the common elements for the TCP_PULL and TCP_PUSH connections.
 	"""
 
-	def __init__(self, commandSocket):
+	def __init__(self, commandSocket, protocol):
 		"""
 		Initializes all attributes
 		"""
-		Handler.__init__(self)
+		Handler.__init__(self, protocol)
 		self.commandSocket = commandSocket
 		self._dataSocket = None
 		self._clientIp = None

@@ -6,17 +6,24 @@ GET_COMMAND = "GET "
 END_COMMAND = "END"
 END_LINE = "\r\n"
 
+def enum(**enums):
+	return type('Enum', (), enums)
+
+Protocol = enum(UDP = 'Udp', TCP = 'Tcp', MCAST = 'MultiCast')
+
 class Handler(Thread):
-	
-	def __init__(self):
+
+	def __init__(self, protocol):
 		Thread.__init__(self)
+		self.protocol = protocol
 		self.interruptFlag = False
+
+		print("Initialized", self.protocol, "Handler.")
 	
 	def kill(self):
 		self.interruptFlag = True
 
 	def run(self):
-		print("Handler ready.")
 		self.receiveCommand()
 
 	def _interpretCommand(self, command):
