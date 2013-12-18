@@ -5,8 +5,8 @@ from handlers.Handler import *
 from TcpSocket import *
 
 # Common vocabulary for TCP requests
+GET_COMMAND = "GET "
 LISTEN_COMMAND = "LISTEN_PORT "
-NEXT_IMG = -1
 
 class TcpHandler(Handler):
 	"""
@@ -34,19 +34,6 @@ class TcpHandler(Handler):
 			self._dataSocket.kill()
 		self._commandSocket.kill()
 
-	def receiveCommand(self):
-		"""
-		Receive a command from the client on the control socket and interpret it.
-		"""
-		while not self._interruptFlag:
-			command = self._commandSocket.nextLine()
-			print('"{}" received'.format(command))
-
-			if None == command:
-				continue
-			else:
-				self._interpretCommand(command)
-
 	def _interpretCommand(self, command):
 		"""
 		Interpret the command received from the client and respond on the dataSocket.
@@ -59,7 +46,7 @@ class TcpHandler(Handler):
 			else:
 				frameId = int(command[len(GET_COMMAND):])
 				# Empty line necessary
-				print("Waiting for blank line...")
+#				print("Waiting for blank line...")
 				if "" == self._commandSocket.nextLine():
 					# If we were asked for a specific frameId (otherwise just send the next one)
 					if (NEXT_IMG != frameId):
@@ -76,6 +63,7 @@ class TcpHandler(Handler):
 		"""
 		# Read the client listening port from the rest of the command
 		command = self._commandSocket.nextLine()
+		print("Command:", command)
 		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]\
 		   and "" == self._commandSocket.nextLine():
 			(self._clientIp, unused) = self._commandSocket.getIp()

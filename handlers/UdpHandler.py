@@ -1,12 +1,17 @@
 # -*-coding:Utf-8 -*
 
+from threading import Timer
+
 import ResourceManager
 from handlers.Handler import *
 from UdpSocket import *
 
-# Common vocabulary for TCP requests
+# Common vocabulary for UDP requests
+GET_COMMAND = "GET "
 LISTEN_COMMAND = "LISTEN_PORT "
-NEXT_IMG = -1
+
+FRAGMENT_COMMAND = "FRAGMENT_SIZE "
+KEEP_ALIVE = "ALIVE "
 
 class UdpHandler(Handler):
 	"""
@@ -18,7 +23,6 @@ class UdpHandler(Handler):
 		Initializes all attributes
 		"""
 		Handler.__init__(self, commandSocket)
-		
 		self._fragmentSize = None
 
 		# TODO : keep-alive mechanism
@@ -36,19 +40,6 @@ class UdpHandler(Handler):
 			self._dataSocket.kill()
 		self._commandSocket.kill()
 
-	def receiveCommand(self):
-		"""
-		Receive a command from the client on the control socket
-		and interpret it.
-		"""
-		while not self._interruptFlag:
-			command = self._commandSocket.nextLine()
-			print('"{}" received'.format(command))
-			if None == command:
-				continue
-			else:
-				self._interpretCommand(command)
-
 	def _interpretCommand(self, command):
 		"""
 		Interpret the command received from the client and
@@ -61,7 +52,11 @@ class UdpHandler(Handler):
 		# If we couldn't recognized this command, maybe one of
 		# the parent class can
 		else:
-			Handler._interpretCommand(self, command)
+			# The parent says whether he interpreted the command
+			return Handler._interpretCommand(self, command)
+		
+		# We say we interpreted the command
+		return True
 
 	def _prepareMessages(self, frameId, frameContent):
 		"""
