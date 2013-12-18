@@ -116,7 +116,7 @@ class UdpHandler(Handler):
 				 	+ str(fragmentNumber) + END_LINE\
 				 	+ str(thisFragmentSize) + END_LINE\
 				 	+ str(fragmentNumber) + END_LINE
-			message = bytes(message, 'Utf-8')
+			message = message.encode('Utf-8')
 
 			begin = self._fragmentSize * fragmentNumber
 			end = begin + thisFragmentSize

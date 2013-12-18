@@ -72,9 +72,9 @@ class TcpHandler(Handler):
 		- The actual frame content
 		"""
 
-		message = bytes(str(frameId) + END_LINE)\
-			 	+ bytes(str(len(frameContent)) + END_LINE, 'Utf-8')\
-			 	+ frameContent
+		message = str(frameId) + END_LINE
+		message = message.encode('Utf-8')
+		message += frameContent
 		return message
 
 	def _sendCurrentFrame(self):
