@@ -5,7 +5,7 @@ from handlers.Handler import *
 from TcpSocket import *
 
 # Common vocabulary for TCP requests
-GET_COMMAND = "GET "
+CONNECTION_COMMAND = "GET "
 LISTEN_COMMAND = "LISTEN_PORT "
 
 class TcpHandler(Handler):
@@ -40,19 +40,9 @@ class TcpHandler(Handler):
 		"""
 
 		# The GET command could mean either "establish connection" or "send a frame"
-		if GET_COMMAND == command[:len(GET_COMMAND)]:
+		if CONNECTION_COMMAND == command[:len(CONNECTION_COMMAND)]:
 			if None == self._dataSocket:
 				self._establishMediaConnection()
-			else:
-				frameId = int(command[len(GET_COMMAND):])
-				# Empty line necessary
-#				print("Waiting for blank line...")
-				if "" == self._commandSocket.nextLine():
-					# If we were asked for a specific frameId (otherwise just send the next one)
-					if (NEXT_IMG != frameId):
-						self._currentFrameId = frameId
-
-					self._sendCurrentFrame()
 		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
 			Handler._interpretCommand(self, command)

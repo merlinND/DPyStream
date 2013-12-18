@@ -11,6 +11,8 @@ GET_COMMAND = "GET "
 LISTEN_COMMAND = "LISTEN_PORT "
 
 FRAGMENT_COMMAND = "FRAGMENT_SIZE "
+
+# Done for all UDP connections so that if the END command is not sent, the connection is closed at some point.
 KEEP_ALIVE = "ALIVE "
 ALIVE_TIMEOUT = 60
 
@@ -41,9 +43,8 @@ class UdpHandler(Handler):
 			self._dataSocket.kill()
 		self._commandSocket.kill()
 
-	def restartTimer(self, autostart):
-		if self._isAliveTimerRunning:
-			self._aliveTimer.cancel()
+	def restartTimer(self):
+		self._aliveTimer.cancel()
 		self._aliveTimer = Timer(ALIVE_TIMEOUT, self.kill)
 
 	def _interpretCommand(self, command):

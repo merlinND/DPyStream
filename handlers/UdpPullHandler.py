@@ -1,15 +1,15 @@
 # -*-coding:Utf-8 -*
 
-from handlers.TcpHandler import *
+from handlers.UdpHandler import *
 from handlers.PullHandler import *
 
-class TcpPullHandler(TcpHandler, PullHandler):
+class UdpPullHandler(UdpHandler, PullHandler):
 	"""
-	This class is able to manage connections from clients who are interested in getting a TCP_PULL connection.
+	This class is able to manage connections from clients who are interested in getting a UDP_PULL connection.
 	"""
 	
 	def __init__(self, commandSocket):
-		TcpHandler.__init__(self, commandSocket)
+		UdpHandler.__init__(self, commandSocket)
 		PullHandler.__init__(self, commandSocket)
 
 	def _interpretCommand(self, command):
@@ -17,14 +17,14 @@ class TcpPullHandler(TcpHandler, PullHandler):
 		Receive a command from the client on the control socket
 		and interpret it.
 		"""
-		tcpInterpreted = TcpHandler._interpretCommand(self, command)
-		# If the TcpHandler cannot interpret this command
-		if not tcpInterpreted:
+		udpInterpreted = UdpHandler._interpretCommand(self, command)
+		# If the UdpHandler cannot interpret this command
+		if not udpInterpreted:
 			pullIntrepreted = PullHandler._interpretCommand(self, command)
 
 		# The parent says whether we interpreted the command
-		return tcpInterpreted or pullIntrepreted
+		return udpInterpreted or pullIntrepreted
 
 	def kill(self):
-		TcpHandler.kill(self)
+		UdpHandler.kill(self)
 		PullHandler.kill(self)
