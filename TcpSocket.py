@@ -1,6 +1,5 @@
 ﻿# -*-coding:Utf-8 -*
 from GenericSocket import *
-import select
 
 class TcpSocket(GenericSocket):
 	"""

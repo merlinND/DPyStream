@@ -15,7 +15,7 @@ class UdpAccepter:
 			self.commonSocket = s
 		self.receiveBuffer = receiveBuffer
 
-		self.interruptFlag = False
+		self._interruptFlag = False
 		self._connectedClients = {}
 
 	def listen(self, host, port):
@@ -47,4 +47,4 @@ class UdpAccepter:
 			return None
 	
 	def kill(self):
-		self.interruptFlag = True
+		self._interruptFlag = True

@@ -35,7 +35,7 @@ class UdpHandler(Handler):
 		"""
 		Properly closes all sockets and interrupts the thread.
 		"""
-		self.interruptFlag = True
+		self._interruptFlag = True
 		# We inform the sockets that we want them to commit
 		# suicide
 		# Note: dataSocket must be closed first as the client
@@ -49,7 +49,7 @@ class UdpHandler(Handler):
 		Receive a command from the client on the control socket
 		and interpret it.
 		"""
-		while not self.interruptFlag:
+		while not self._interruptFlag:
 			command = self.commandSocket.nextLine()
 			print('"{}" received'.format(command))
 			if None == command:

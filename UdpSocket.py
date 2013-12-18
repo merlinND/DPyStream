@@ -1,8 +1,7 @@
 # -*-coding:Utf-8 -*
 from GenericSocket import *
-import select
 
-class UdpSocket:
+class UdpSocket(GenericSocket):
 	"""
 	UdpSocket implements our high level methods to send and
 	receive information.
@@ -16,7 +15,7 @@ class UdpSocket:
 		client is a simple object containing the client host address and its receive port.
 		"""
 		GenericSocket.__init__(self)
-		
+
 		# Which client is allowed to communicate with us
 		# (others are ignored)
 		self.clientHost = host
@@ -36,7 +35,7 @@ class UdpSocket:
 		if str == type(message):
 			message = message.encode('Utf-8')
 
-		while totalSent < len(message) and not self.interruptFlag:
+		while totalSent < len(message) and not self._interruptFlag:
 			(rr,readyToWrite,err) = select.select([],[self.s],[], self._selectTimer)
 			if readyToWrite:
 				sent = self.s.sendto(message[totalSent:], (self.clientHost, self.clientPort))
@@ -45,7 +44,7 @@ class UdpSocket:
 				totalSent += sent
 
 	def nextLine(self, receiveBuffer=4096, delimiter="\r\n"):
-		while not self.interruptFlag:
+		while not self._interruptFlag:
 			if self._buffer.find(delimiter) != -1:
 				(line, self._buffer) = self._buffer.split(\
 								   delimiter, 1)

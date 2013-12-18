@@ -16,12 +16,12 @@ class Handler(Thread):
 	def __init__(self, protocol):
 		Thread.__init__(self)
 		self.protocol = protocol
-		self.interruptFlag = False
+		self._interruptFlag = False
 
 		print("Initialized", self.protocol, "Handler.")
 	
 	def kill(self):
-		self.interruptFlag = True
+		self._interruptFlag = True
 
 	def run(self):
 		self.receiveCommand()

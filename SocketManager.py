@@ -16,7 +16,7 @@ class SocketManager(Thread):
 
 	def __init__(self, host, port):
 		Thread.__init__(self)
-		self.interruptFlag = False
+		self._interruptFlag = False
 
 		self._selectTimer = 3
 
@@ -41,7 +41,7 @@ class SocketManager(Thread):
 		serverSocket.listen(self._host, self._listeningPort)
 		clientSocket = None
 		# One TCP Handler per client
-		while not self.interruptFlag:
+		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select(				\
 								   [serverSocket.s],[],[],	\
 								   self._selectTimer)
@@ -54,7 +54,7 @@ class SocketManager(Thread):
 		self.accepter = UdpAccepter()
 		self.accepter.listen(self._host, self._listeningPort)
 
-		while not self.interruptFlag:
+		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select(				\
 								   [self.accepter.commonSocket],\
 								   [],[], self._selectTimer)
@@ -89,4 +89,4 @@ class SocketManager(Thread):
 			print(( len(self.clients) - i), " clients still alive")
 		
 		# And we then kill ourself
-		self.interruptFlag = True
+		self._interruptFlag = True

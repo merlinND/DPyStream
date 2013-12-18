@@ -17,14 +17,14 @@ class CatalogHandler(Handler):
 		self.receiveCommand()
 	
 	def kill(self):
-		self.interruptFlag = True
+		self._interruptFlag = True
 		# We inform the commandSocket that we want it to commit
 		# suicide
 		self.commandSocket.kill()
 
 	def receiveCommand(self):
 		command = b''
-		while command != b'e' and not self.interruptFlag:
+		while command != b'e' and not self._interruptFlag:
 			# TODO: send the catalog only one per message
 			# received (not per single caracter)
 			command = self.commandSocket.receive(1)
