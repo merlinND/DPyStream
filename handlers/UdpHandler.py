@@ -51,9 +51,8 @@ class UdpHandler(Handler):
 		respond on the dataSocket.
 		"""
 		# The GET command could mean either "setup" or "send a frame"
-		if GET_COMMAND == command[:len(GET_COMMAND)]:
-			if None == self._fragmentSize:
-				self.setupClientContact()
+		if None == self._fragmentSize and GET_COMMAND == command[:len(GET_COMMAND)]:
+			self.setupClientContact()
 			# If we needed to "send a frame", we let PushHandler or PullHandler take care of it
 		# If we couldn't recognized this command, maybe one of
 		# the parent class can
@@ -90,9 +89,9 @@ class UdpHandler(Handler):
 		"""
 
 		# TODO : prepare the message
-		print("Preparing messages with fragment size", self._fragmentSize)
 		messages = []
 
+		totalFrameSize = str(len(frameContent))
 		remainingSize = len(frameContent)
 		fragmentNumber = 0
 		while remainingSize > 0:
@@ -102,7 +101,7 @@ class UdpHandler(Handler):
 				thisFragmentSize = remainingSize
 
 			message = str(frameId) + END_LINE\
-				 	+ str(len(frameContent)) + END_LINE\
+				 	+ totalFrameSize + END_LINE\
 				 	+ str(fragmentNumber) + END_LINE\
 				 	+ str(thisFragmentSize) + END_LINE
 			message = message.encode('Utf-8')
@@ -123,12 +122,12 @@ class UdpHandler(Handler):
 		"""
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 		
-		print("Sending frame {} next frame will be #{}.".format(self._currentFrameId, nextFrameId))
+		print("Sending frame #{} next frame will be #{}.".format(self._currentFrameId, nextFrameId))
 		messages = self._prepareMessages(self._currentFrameId, image)
 
 		# We create a UDP socket just for this occasion
 		socket = UdpSocket(None, self._clientIp, self._clientListenPort)
-		for message in messages:
-			socket.send(message)
+		for fragment in messages:
+			socket.send(fragment)
 
 		self._currentFrameId = nextFrameId

@@ -25,9 +25,6 @@ class UdpSocket(GenericSocket):
 		self.clientHost = host
 		self.clientPort = port
 
-		# Given by the UdpAccepter
-		self.s = s
-
 	def receive(self, message):
 		"""
 		This receive method is called by the UdpAccepter, which forwards to us only the messages that come from our client.

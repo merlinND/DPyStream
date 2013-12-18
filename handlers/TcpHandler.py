@@ -40,12 +40,15 @@ class TcpHandler(Handler):
 		"""
 
 		# The GET command could mean either "establish connection" or "send a frame"
-		if CONNECTION_COMMAND == command[:len(CONNECTION_COMMAND)]:
-			if None == self._dataSocket:
-				self._establishMediaConnection()
+		if None == self._dataSocket and CONNECTION_COMMAND == command[:len(CONNECTION_COMMAND)]:
+			self._establishMediaConnection()
 		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
-			Handler._interpretCommand(self, command)
+			# The parent says whether he interpreted the command
+			return Handler._interpretCommand(self, command)
+
+		# We say we interpreted the command
+		return True
 
 	def _establishMediaConnection(self):
 		"""
@@ -53,6 +56,7 @@ class TcpHandler(Handler):
 		"""
 		# Read the client listening port from the rest of the command
 		command = self._commandSocket.nextLine()
+		print("Command:", command)
 		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]\
 		   and "" == self._commandSocket.nextLine():
 			self._clientIp = self._commandSocket.getIp()
