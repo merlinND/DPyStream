@@ -17,10 +17,15 @@ class Handler(Thread):
 		self._clientIp = None
 		self._clientListenPort = None
 
-		# TODO : these properties should come from the catalog
-		self._mediaId = 5
 		self._currentFrameId = 0
+		# These properties will be set with values coming from the catalog
+		self._mediaId = None
+		self._ips = None
 	
+	def setMediaProperties(self, properties):
+		self._mediaId = properties['id']
+		self._ips = properties['ips']
+
 	def kill(self):
 		self._interruptFlag = True
 

@@ -14,7 +14,7 @@ class SocketManager(Thread):
 	a new socket (and associated thread) for each client.
 	"""
 
-	def __init__(self, host, port):
+	def __init__(self, host, port, protocol):
 		Thread.__init__(self)
 		self._interruptFlag = False
 
@@ -22,7 +22,7 @@ class SocketManager(Thread):
 
 		self._host = host
 		self._listeningPort = port
-		self._protocol = HandlerFactory.getProtocol(port)
+		self._protocol = protocol
 
 		print('Will listen on', host, ':', port, '(', self._protocol, ')')
 		# We will maintain a list of all active connections
@@ -30,33 +30,37 @@ class SocketManager(Thread):
 		self.accepter = None
 
 	def run(self):
-		if Protocol.TCP == self._protocol:
-			self.startTcpHandler()
-		elif Protocol.UDP == self._protocol:
-			self.startUdpHandler()
+		if 		Protocol.CATALOG == self._protocol \
+			or Protocol.TCP_PUSH == self._protocol \
+			or Protocol.TCP_PULL == self._protocol:
+			self.acceptTcp()
+		elif	Protocol.UDP_PULL == self._protocol \
+			or  Protocol.UDP_PUSH == self._protocol:
+			self.acceptUdp()
+		elif	Protocol.MCAST_PUSH == self._protocol:
+			# TODO: accept function for multicast: not needed?
+			pass
+		else:
+			raise(Exception('Protocol {} not supported by SocketManager.'.format(self._protocol)))
 
-	def startTcpHandler(self):
+	def acceptTcp(self):
 		serverSocket = TcpSocket()
 		serverSocket.listen(self._host, self._listeningPort)
 		clientSocket = None
 		# One TCP Handler per client
 		while not self._interruptFlag:
-			(readyToRead,rw,err) = select.select(				\
-								   [serverSocket.s],[],[],	\
-								   self._selectTimer)
+			(readyToRead,rw,err) = select.select([serverSocket.s], [], [], self._selectTimer)
 			if readyToRead:
 				clientSocket = serverSocket.accept()
 
 				self.startHandler(clientSocket)
 
-	def startUdpHandler(self):
+	def acceptUdp(self):
 		self.accepter = UdpAccepter()
 		self.accepter.listen(self._host, self._listeningPort)
 
 		while not self._interruptFlag:
-			(readyToRead,rw,err) = select.select(				\
-								   [self.accepter.commonSocket],\
-								   [],[], self._selectTimer)
+			(readyToRead,rw,err) = select.select([self.accepter.commonSocket], [], [], self._selectTimer)
 			if readyToRead:
 				# One UDP socket per client, knowing its client
 				clientSocket = self.accepter.accept()

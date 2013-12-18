@@ -14,49 +14,48 @@ from handlers.UdpPushHandler import *
 def enum(**enums):
 	return type('Enum', (), enums)
 
-Protocol = enum(UDP = 'Udp', TCP = 'Tcp', MCAST = 'MultiCast')
+Protocol = enum(CATALOG = 'CATALOG', TCP_PULL = 'TCP_PULL', TCP_PUSH = 'TCP_PUSH', UDP_PULL = 'UDP_PULL', UDP_PUSH = 'UDP_PUSH', MCAST_PUSH = 'MCAST_PUSH')
 
-_connectionTypes = {};
+_connectionDescriptors = { };
 
-def setConnectionTypes(connectionTypes):
+def setConnectionProperties(connectionProperties):
 	"""
 	connectionTypes should be a dictionnary associating each used port to its connection type, expressed as a string ('TCP_PULL', 'UDP_PULL', etc).
 	"""
-	# We map the given strings to the actual Handler classes
-	for port in connectionTypes:
-		thisType = connectionTypes[port]
+	for properties in connectionProperties:
+		port = properties['port']
+		protocol = properties['protocol']
 
-		if thisType == 'CATALOG':
-			_connectionTypes[port] = (CatalogHandler,\
-									  Protocol.TCP)
-		elif thisType == 'TCP_PULL':
-			_connectionTypes[port] = (TcpPullHandler,\
-									  Protocol.TCP)
-		elif thisType == 'TCP_PUSH':
-			_connectionTypes[port] = (TcpPushHandler,\
-									  Protocol.TCP)
-		elif thisType == 'UDP_PULL':
-			_connectionTypes[port] = (None, None)#UdpPullHandler,	Protocol.UDP)
-		elif thisType == 'UDP_PUSH':
-			_connectionTypes[port] = (UdpPushHandler,\
-									  Protocol.UDP); #UdpPushHandler;
-		elif thisType == 'MCAST_PUSH':
-			_connectionTypes[port] = (None, None)#MCastPushHandler,	Protocol.MCAST)
+		# We map the given strings to the actual Handler classes
+		handlerClass = None
+		if protocol == Protocol.CATALOG:
+			handlerClass = CatalogHandler
+		elif protocol == Protocol.TCP_PULL:
+			handlerClass = TcpPullHandler
+		elif protocol == Protocol.TCP_PUSH:
+			handlerClass = TcpPushHandler
+		elif protocol == Protocol.UDP_PULL:
+			pass #handlerClass = UdpPullHandler
+		elif protocol == Protocol.UDP_PUSH:
+			handlerClass = UdpPushHandler
+		elif protocol == Protocol.MCAST_PUSH:
+			pass #handlerClass = MCastPushHandler
 		else:
-			raise Exception("The connection type {} is not supported.".format(thisType))
+			raise Exception("The connection type {} is not supported.".format(protocol))
 
-def getProtocol(port):
-	_, protocol = _connectionTypes[port]
-	return protocol
+		properties['handlerClass'] = handlerClass
+		_connectionDescriptors[port] = properties
 
 def createAppropriateHandler(port, socket):
 	"""
-	Returns a new instance of the right kind of Handler for this port, as specified by _connectionTypes.
+	Returns a new instance of the right kind of Handler for this port, as specified by _connectionDescriptors.
 	Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerFactory.createAppropriateHandler(42000) should thus return a new instance of UdpPullHandler.
 	"""
+	print("Creating appropriate handler for port", port)
 	try:
-		handler, protocol = _connectionTypes[port]
-		return handler(socket)
+		theHandler = _connectionDescriptors[port]['handlerClass'](socket)
+		theHandler.setMediaProperties(_connectionDescriptors[port])
+		return theHandler
 	except KeyError:
 		# TODO : fail gracefully
 		raise Exception("No connection is available on this port.")

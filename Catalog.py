@@ -91,26 +91,46 @@ def addMediaToResourceManager():
 	for media in _catalog:
 		ResourceManager.addResource(int(media["id"]), media["files"])
 
-def getConnectionTypes():
+def getConnectionProperties():
 	"""
-	Returns a dictionary associating each port to its connection type (written as string), taken directly from the media descriptor.
-	Example : 
-	{
-		'8088': 'TCP_PUSH',
-		'12234': 'MCAST_PUSH',
-		'11114': 'UDP_PULL',
-		'11111': 'MCAST_PUSH',
-		'11113': 'TCP_PULL',
-		'11112': 'UDP_PUSH'
-	}
+	Returns a list of connection property descriptors, each line taken directly from the media descriptor:
+	- Media ID
+	- Listen port
+	- Protocol (written as string)
+	- IPS
+	Example: 
+	[
+		{
+			'id': 1,
+			'port': 8088,
+			'protocol': 'TCP_PUSH',
+			'ips': 1.5
+		},
+		{
+			'id': 2,
+			'port': 12234,
+			'protocol': 'MCAST_PUSH',
+			'ips': 4
+		}
+	]
 	"""
-	connectionTypes = {}
-	# Add one connection type for catalog serving
-	connectionTypes[_catalogPort] = 'CATALOG'
-
+	connectionProperties = []
+	# One descriptor per media
 	for media in _catalog:
-		connectionTypes[int(media['port'])] = media['protocol']
-	return connectionTypes
+		descriptor = {
+			'id': int(media['id']),
+			'port': int(media['port']),
+			'protocol': media['protocol'],
+			'ips': float(media['ips'])
+		}
+		connectionProperties.append(descriptor)
+	# And one as well for serving the catalog
+	descriptor = {
+		'port': _catalogPort,
+		'protocol': 'CATALOG'
+	}
+	connectionProperties.append(descriptor)
+	return connectionProperties
 
 def asHttp():
 	"""
