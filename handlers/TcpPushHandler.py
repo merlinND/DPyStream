@@ -11,12 +11,12 @@ class TcpPushHandler(TcpHandler):
 	This class is able to manage connections from clients who are interested in getting a media via protocol TCP_PUSH.
 	"""
 	
-	def __init__(self, commandSocket, protocol):
+	def __init__(self, commandSocket):
 		"""
 		The parameter 'commandSocket' holds the TCP control connection with the client.
 		The client will send commands via this connection and this is the handler's job to interpret them.
 		"""
-		TcpHandler.__init__(self, commandSocket, protocol)
+		TcpHandler.__init__(self, commandSocket)
 		
 		self._mediaId = 1
 		self._currentFrameId = 0
@@ -67,12 +67,12 @@ class TcpPushHandler(TcpHandler):
 		elif START_COMMAND == command[:len(START_COMMAND)]:
 			# Empty line necessary
 			print("Waiting for blank line...")
-			if "" == self.commandSocket.nextLine():
+			if "" == self._commandSocket.nextLine():
 				self.startPushing()
 		elif PAUSE_COMMAND == command[:len(PAUSE_COMMAND)]:
 			# Empty line necessary
 			print("Waiting for blank line...")
-			if "" == self.commandSocket.nextLine():
+			if "" == self._commandSocket.nextLine():
 				self.stopPushing()
 
 		# If we couldn't recognized this command, maybe one of the parent class can

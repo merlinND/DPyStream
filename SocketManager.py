@@ -3,7 +3,7 @@ from threading import Thread
 import select
 
 from handlers import HandlerFactory
-from handlers import Handler
+from handlers.HandlerFactory import Protocol
 from TcpSocket import *
 from UdpSocket import *
 from UdpAccepter import *
@@ -30,11 +30,10 @@ class SocketManager(Thread):
 		self.accepter = None
 
 	def run(self):
-		clientSocket = None
-		if   Handler.Protocol.TCP == self._protocol:
-			clientSocket = self.startTcpHandler()
-		elif Handler.Protocol.UDP == self._protocol:
-			clientSocket = self.startUdpHandler()
+		if Protocol.TCP == self._protocol:
+			self.startTcpHandler()
+		elif Protocol.UDP == self._protocol:
+			self.startUdpHandler()
 
 	def startTcpHandler(self):
 		serverSocket = TcpSocket()

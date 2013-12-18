@@ -13,19 +13,15 @@ class TcpHandler(Handler):
 	This class implements the common elements for the TCP_PULL and TCP_PUSH connections.
 	"""
 
-	def __init__(self, commandSocket, protocol):
+	def __init__(self, commandSocket):
 		"""
 		Initializes all attributes
 		"""
-		Handler.__init__(self, protocol)
-		self.commandSocket = commandSocket
+		Handler.__init__(self, commandSocket)
+		self._commandSocket = commandSocket
 		self._dataSocket = None
 		self._clientIp = None
 		self._clientListenPort = None
-
-		# TODO : these properties should come from the catalog
-		self._mediaId = 5
-		self._currentFrameId = 0
 
 	def kill(self):
 		"""
@@ -36,14 +32,14 @@ class TcpHandler(Handler):
 		# Note: dataSocket must be closed first as the client closes the connection from its side
 		if None != self._dataSocket:
 			self._dataSocket.kill()
-		self.commandSocket.kill()
+		self._commandSocket.kill()
 
 	def receiveCommand(self):
 		"""
 		Receive a command from the client on the control socket and interpret it.
 		"""
 		while not self._interruptFlag:
-			command = self.commandSocket.nextLine()
+			command = self._commandSocket.nextLine()
 			print('"{}" received'.format(command))
 
 			if None == command:
@@ -64,8 +60,7 @@ class TcpHandler(Handler):
 				frameId = int(command[len(GET_COMMAND):])
 				# Empty line necessary
 				print("Waiting for blank line...")
-				# TODO : fix waiting for blank line timing out ?
-				if "" == self.commandSocket.nextLine():
+				if "" == self._commandSocket.nextLine():
 					# If we were asked for a specific frameId (otherwise just send the next one)
 					if (NEXT_IMG != frameId):
 						self._currentFrameId = frameId
@@ -80,10 +75,10 @@ class TcpHandler(Handler):
 		Connects the dataSocket to the port given via the commandSocket
 		"""
 		# Read the client listening port from the rest of the command
-		command = self.commandSocket.nextLine()
+		command = self._commandSocket.nextLine()
 		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]\
-		   and "" == self.commandSocket.nextLine():
-			(self._clientIp, unused) = self.commandSocket.getIp()
+		   and "" == self._commandSocket.nextLine():
+			(self._clientIp, unused) = self._commandSocket.getIp()
 			self._clientListenPort = int(command[len(LISTEN_COMMAND):])
 			# We establish a new connection to the client to send the requested media
 			# TODO : handle "connection refused" gracefully
@@ -110,10 +105,6 @@ class TcpHandler(Handler):
 		Sends the current image (based on currentFrameId) to the client through the dataSocket.
 		"""
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
-		# message = str(self._currentFrameId) + END_LINE
-		# message += str(image['size']) + END_LINE
-		# message = message.encode('Utf-8')
-		# message += image['bytes']
 
 		print("Sending frame {} next frame will be #{}.".format(self._currentFrameId, nextFrameId))
 		message = self._prepareMessage(self._currentFrameId, image)

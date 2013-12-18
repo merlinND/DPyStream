@@ -10,6 +10,12 @@ from handlers.TcpPullHandler import *
 from handlers.TcpPushHandler import *
 from handlers.UdpPushHandler import *
 
+
+def enum(**enums):
+	return type('Enum', (), enums)
+
+Protocol = enum(UDP = 'Udp', TCP = 'Tcp', MCAST = 'MultiCast')
+
 _connectionTypes = {};
 
 def setConnectionTypes(connectionTypes):
@@ -50,7 +56,7 @@ def createAppropriateHandler(port, socket):
 	"""
 	try:
 		handler, protocol = _connectionTypes[port]
-		return handler(socket, protocol)
+		return handler(socket)
 	except KeyError:
 		# TODO : fail gracefully
 		raise Exception("No connection is available on this port.")

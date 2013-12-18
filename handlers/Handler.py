@@ -6,19 +6,20 @@ GET_COMMAND = "GET "
 END_COMMAND = "END"
 END_LINE = "\r\n"
 
-def enum(**enums):
-	return type('Enum', (), enums)
-
-Protocol = enum(UDP = 'Udp', TCP = 'Tcp', MCAST = 'MultiCast')
-
 class Handler(Thread):
 
-	def __init__(self, protocol):
+	def __init__(self, commandSocket):
 		Thread.__init__(self)
-		self.protocol = protocol
 		self._interruptFlag = False
 
-		print("Initialized", self.protocol, "Handler.")
+		self._commandSocket = commandSocket
+		self._dataSocket = None
+		self._clientIp = None
+		self._clientListenPort = None
+
+		# TODO : these properties should come from the catalog
+		self._mediaId = 5
+		self._currentFrameId = 0
 	
 	def kill(self):
 		self._interruptFlag = True
@@ -30,6 +31,6 @@ class Handler(Thread):
 		if END_COMMAND == command[:len(END_COMMAND)]:
 			# Empty line necessary
 			print("Waiting for blank line...")
-			if "" == self.commandSocket.nextLine():
+			if "" == self._commandSocket.nextLine():
 				self.kill()
 				print("Connection closed.")
