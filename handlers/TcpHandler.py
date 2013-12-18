@@ -72,7 +72,8 @@ class TcpHandler(Handler):
 		- The actual frame content
 		"""
 
-		message = str(frameId) + END_LINE
+		message = str(frameId) + END_LINE \
+				+ str(len(frameContent)) + END_LINE
 		message = message.encode('Utf-8')
 		message += frameContent
 		return message
