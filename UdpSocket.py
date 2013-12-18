@@ -1,36 +1,34 @@
 # -*-coding:Utf-8 -*
-import socket
+from GenericSocket import *
 import select
 
 class UdpSocket:
 	"""
 	UdpSocket implements our high level methods to send and
 	receive information.
+	Note: all UdpSocket instances share the same commonSocket
 	"""
 
-	def __init__(self, s, client):
-		# Which client is allowed to communicate
+	def __init__(self, s, host, port):
+		"""
+		s is the underlying socket instance (given by the UdpAccepter)
+		Note: all UdpSocket instances share the same commonSocket
+		client is a simple object containing the client host address and its receive port.
+		"""
+		GenericSocket.__init__(self)
+		
+		# Which client is allowed to communicate with us
 		# (others are ignored)
-		self.client = client
+		self.clientHost = host
+		self.clientPort = port
 
 		# Given by the UdpAccepter
 		self.s = s
 
-		# These options allow to interrupt the socket during a
-		# recv or send
-		self.interruptFlag = False
-		self._selectTimer = 3
-		self._buffer = ""
-
-	def _close(self):
-		self.send(b'The connection is going down NOW.\r\n')
-		# No need to close a Udp Socket
-	
-	def kill(self):
-		self.interruptFlag = True
-		self._close()
-
 	def receive(self, message):
+		"""
+		This receive method is called by the UdpAccepter, which forwards to us only the messages that come from our client.
+		"""
 		self._buffer += str(message, 'Utf-8')
 
 	def send(self, message):
@@ -41,7 +39,7 @@ class UdpSocket:
 		while totalSent < len(message) and not self.interruptFlag:
 			(rr,readyToWrite,err) = select.select([],[self.s],[], self._selectTimer)
 			if readyToWrite:
-				sent = self.s.sendto(message[totalSent:], (self.host, self.port))
+				sent = self.s.sendto(message[totalSent:], (self.clientHost, self.clientPort))
 				if 0 == sent:
 					raise RuntimeError("The UDP Socket connection was broken while trying to send.")
 				totalSent += sent
