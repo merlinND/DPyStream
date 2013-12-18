@@ -8,7 +8,8 @@ from UdpSocket import *
 # Common vocabulary for UDP requests
 # TODO: put all commands in an enum?
 # TODO: create function to test for commands easily (rather than always use GET_COMMAND == command[:len(GET_COMMAND)])
-GET_COMMAND = "GET "
+
+CONNECTION_COMMAND = "GET "
 LISTEN_COMMAND = "LISTEN_PORT "
 
 FRAGMENT_COMMAND = "FRAGMENT_SIZE "
@@ -51,7 +52,7 @@ class UdpHandler(Handler):
 		respond on the dataSocket.
 		"""
 		# The GET command could mean either "setup" or "send a frame"
-		if None == self._fragmentSize and GET_COMMAND == command[:len(GET_COMMAND)]:
+		if None == self._fragmentSize and CONNECTION_COMMAND == command[:len(CONNECTION_COMMAND)]:
 			self.setupClientContact()
 			# If we needed to "send a frame", we let PushHandler or PullHandler take care of it
 		elif KEEP_ALIVE_COMMAND == command[:len(KEEP_ALIVE_COMMAND)]:
@@ -89,10 +90,10 @@ class UdpHandler(Handler):
 		- The actual fragment content
 		"""
 
-		# TODO : prepare the message
 		messages = []
 
 		totalFrameSize = str(len(frameContent))
+		frameIdString = str(frameId)
 		remainingSize = len(frameContent)
 		fragmentNumber = 0
 		while remainingSize > 0:
@@ -101,7 +102,7 @@ class UdpHandler(Handler):
 			else:
 				thisFragmentSize = remainingSize
 
-			message = str(frameId) + END_LINE\
+			message = frameIdString + END_LINE\
 				 	+ totalFrameSize + END_LINE\
 				 	+ str(fragmentNumber) + END_LINE\
 				 	+ str(thisFragmentSize) + END_LINE
