@@ -70,9 +70,33 @@ class UdpHandler(Handler):
 		"""
 
 		# TODO : prepare the message
+		print("Preparing messages with fragment size", self._fragmentSize)
+		messages = []
 
-		message = b''
-		return message
+		remainingSize = len(frameContent)
+		fragmentNumber = 0
+		while remainingSize > 0:
+			if remainingSize >= self._fragmentSize:
+				thisFragmentSize = self._fragmentSize
+			else:
+				thisFragmentSize = remainingSize
+
+			message = str(frameId) + END_LINE\
+				 	+ str(len(frameContent)) + END_LINE\
+				 	+ str(fragmentNumber) + END_LINE\
+				 	+ str(thisFragmentSize) + END_LINE\
+				 	+ str(fragmentNumber) + END_LINE
+			message = bytes(message, 'Utf-8')
+
+			begin = self._fragmentSize * fragmentNumber
+			end = begin + thisFragmentSize
+			message += frameContent[begin:end]
+			messages.append(message)
+			
+			remainingSize -= self._fragmentSize
+			fragmentNumber += 1
+
+		return messages
 
 	def _sendCurrentFrame(self):
 		"""
