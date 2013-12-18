@@ -9,6 +9,10 @@ class UdpPullHandler(UdpHandler, PullHandler):
 	"""
 	
 	def __init__(self, commandSocket):
+		"""
+		The parameter 'commandSocket' holds the UDP control connection with the client.
+		The client will send commands via this connection and this is the handler's job to interpret them.
+		"""
 		UdpHandler.__init__(self, commandSocket)
 		PullHandler.__init__(self, commandSocket)
 

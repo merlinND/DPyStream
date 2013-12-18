@@ -37,7 +37,7 @@ class PushHandler(Handler):
 		self._pushTimer.start()
 		self._isTimerRunning = True
 
-	def restartTimer(self, autostart):
+	def restartPushTimer(self, autostart):
 		if self._isTimerRunning:
 			self._pushTimer.cancel()
 
@@ -59,7 +59,7 @@ class PushHandler(Handler):
 		self._sendCurrentFrame()
 
 		# We restart the timer
-		self.restartTimer(True)
+		self.restartPushTimer(True)
 
 	def _interpretCommand(self, command):
 		"""
