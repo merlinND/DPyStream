@@ -47,7 +47,6 @@ class Handler(Thread):
 	def _interpretCommand(self, command):
 		if END_COMMAND == command[:len(END_COMMAND)]:
 			# Empty line necessary
-#			print("Waiting for blank line...")
 			if "" == self._commandSocket.nextLine():
 				self.kill()
 				print("Connection closed.")

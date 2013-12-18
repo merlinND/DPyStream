@@ -27,7 +27,8 @@ class TcpSocket(GenericSocket):
 		return TcpSocket(s = clientSocket)
 
 	def getIp(self):
-		return self.s.getsockname()
+		(ip, port) = self.s.getsockname()
+		return ip
 
 	def connect(self, host, port):
 		self.s.connect((host, port))

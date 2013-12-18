@@ -69,12 +69,10 @@ class PushHandler(Handler):
 		# The GET command could only mean "establish connection"
 		if START_COMMAND == command[:len(START_COMMAND)]:
 			# Empty line necessary
-#			print("Waiting for blank line...")
 			if "" == self._commandSocket.nextLine():
 				self.startPushing()
 		elif PAUSE_COMMAND == command[:len(PAUSE_COMMAND)]:
 			# Empty line necessary
-#			print("Waiting for blank line...")
 			if "" == self._commandSocket.nextLine():
 				self.stopPushing()
 		# If we couldn't recognized this command, maybe one of the parent class can

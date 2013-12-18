@@ -4,7 +4,7 @@ Type: BMP
 Address: 127.0.0.1
 Port: 11114
 Protocol: UDP_PULL
-IPS: 0.25
+IPS: 1
 resources/1/img1.bmp
 resources/1/img2.bmp
 resources/1/img3.bmp

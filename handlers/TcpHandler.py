@@ -46,7 +46,6 @@ class TcpHandler(Handler):
 			else:
 				frameId = int(command[len(GET_COMMAND):])
 				# Empty line necessary
-#				print("Waiting for blank line...")
 				if "" == self._commandSocket.nextLine():
 					# If we were asked for a specific frameId (otherwise just send the next one)
 					if (NEXT_IMG != frameId):
@@ -63,10 +62,9 @@ class TcpHandler(Handler):
 		"""
 		# Read the client listening port from the rest of the command
 		command = self._commandSocket.nextLine()
-		print("Command:", command)
 		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]\
 		   and "" == self._commandSocket.nextLine():
-			(self._clientIp, unused) = self._commandSocket.getIp()
+			self._clientIp = self._commandSocket.getIp()
 			self._clientListenPort = int(command[len(LISTEN_COMMAND):])
 			# We establish a new connection to the client to send the requested media
 			# TODO : handle "connection refused" gracefully
@@ -83,8 +81,8 @@ class TcpHandler(Handler):
 		- The actual frame content
 		"""
 
-		message = bytes(str(frameId) + END_LINE\
-			 		  + str(len(frameContent)) + END_LINE, 'Utf-8')\
+		message = bytes(str(frameId) + END_LINE)\
+			 	+ bytes(str(len(frameContent)) + END_LINE, 'Utf-8')\
 			 	+ frameContent
 		return message
 

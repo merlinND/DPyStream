@@ -8,6 +8,7 @@ from handlers.Handler import *
 from handlers.CatalogHandler import *
 from handlers.TcpPullHandler import *
 from handlers.TcpPushHandler import *
+from handlers.UdpHandler import * # TODO: replace with UdpPullHandler
 from handlers.UdpPushHandler import *
 
 
@@ -51,7 +52,6 @@ def createAppropriateHandler(port, socket):
 	Returns a new instance of the right kind of Handler for this port, as specified by _connectionDescriptors.
 	Example: a media declares to use port 42000 for an UDP_PULL connection. HandlerFactory.createAppropriateHandler(42000) should thus return a new instance of UdpPullHandler.
 	"""
-	print("Creating appropriate handler for port", port)
 	try:
 		theHandler = _connectionDescriptors[port]['handlerClass'](socket)
 		theHandler.setMediaProperties(_connectionDescriptors[port])

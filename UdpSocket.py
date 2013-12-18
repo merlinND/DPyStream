@@ -40,7 +40,7 @@ class UdpSocket(GenericSocket):
 			if readyToWrite:
 				sent = self.s.sendto(message[totalSent:], (self.clientHost, self.clientPort))
 				if 0 == sent:
-					raise RuntimeError("The UDP Socket connection was broken while trying to send.")
+					raise RuntimeError("The UDP Socket was broken while trying to send.")
 				totalSent += sent
 
 	def nextLine(self, receiveBuffer=4096, delimiter="\r\n"):
@@ -49,3 +49,6 @@ class UdpSocket(GenericSocket):
 				(line, self._buffer) = self._buffer.split(\
 								   delimiter, 1)
 				return line
+
+	def getIp(self):
+		return self.clientHost
