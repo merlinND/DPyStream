@@ -14,7 +14,7 @@ LISTEN_COMMAND = "LISTEN_PORT "
 FRAGMENT_COMMAND = "FRAGMENT_SIZE "
 
 # Done for all UDP connections so that if the END command is not sent, the connection is closed at some point.
-KEEP_ALIVE = "ALIVE "
+KEEP_ALIVE_COMMAND = "ALIVE "
 ALIVE_TIMEOUT = 60
 
 class UdpHandler(Handler):
@@ -41,7 +41,7 @@ class UdpHandler(Handler):
 		# We inform the sockets that we want them to commit suicide
 		self._commandSocket.kill()
 
-	def restartTimer(self):
+	def restartKeepAliveTimer(self):
 		self._aliveTimer.cancel()
 		self._aliveTimer = Timer(ALIVE_TIMEOUT, self.kill)
 
@@ -54,8 +54,9 @@ class UdpHandler(Handler):
 		if None == self._fragmentSize and GET_COMMAND == command[:len(GET_COMMAND)]:
 			self.setupClientContact()
 			# If we needed to "send a frame", we let PushHandler or PullHandler take care of it
-		# If we couldn't recognized this command, maybe one of
-		# the parent class can
+		elif KEEP_ALIVE_COMMAND == command[:len(KEEP_ALIVE_COMMAND)]:
+			self.restartKeepAliveTimer()
+		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
 			# The parent says whether he interpreted the command
 			return Handler._interpretCommand(self, command)
@@ -109,8 +110,8 @@ class UdpHandler(Handler):
 			begin = self._fragmentSize * fragmentNumber
 			end = begin + thisFragmentSize
 			message += frameContent[begin:end]
+
 			messages.append(message)
-			
 			remainingSize -= self._fragmentSize
 			fragmentNumber += 1
 
