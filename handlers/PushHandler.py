@@ -27,6 +27,11 @@ class PushHandler(Handler):
 		self._isTimerRunning = False
 		self._pushTimer = None
 
+	def setMediaProperties(self, properties):
+		Handler.setMediaProperties(self, properties)
+		if self._ips != 0:
+			self._interval = 1 / self._ips
+
 	def kill(self):
 		self.stopPushing()
 		Handler.kill(self)
