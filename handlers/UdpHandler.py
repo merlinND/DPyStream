@@ -30,7 +30,7 @@ class UdpHandler(Handler):
 		Handler.__init__(self, commandSocket)
 		self._fragmentSize = None
 
-		# If the keep-alive wasn't sent after 60 seconds, we commit suicide.
+		# If the keep-alive wasn't sent after ALIVE_TIMEOUT seconds, we commit suicide.
 		self._aliveTimer = Timer(ALIVE_TIMEOUT, self.kill)
 		self._isAliveTimerRunning = True
 
