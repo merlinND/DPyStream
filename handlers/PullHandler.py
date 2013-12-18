@@ -27,13 +27,14 @@ class PullHandler(Handler):
 		"""
 		if GET_COMMAND == command[:len(GET_COMMAND)]:
 			frameId = int(command[len(GET_COMMAND):])
-			# Empty line necessary
-			if "" == self._commandSocket.nextLine():
-				# If we were asked for a specific frameId (otherwise just send the next one)
-				if (NEXT_IMAGE != frameId):
-					self._currentFrameId = frameId
+			# There should be an empty line
+			_ = self._commandSocket.nextLine()
+			
+			# If we were asked for a specific frameId (otherwise just send the next one)
+			if (NEXT_IMAGE != frameId):
+				self._currentFrameId = frameId
 
-				self._sendCurrentFrame()
+			self._sendCurrentFrame()
 		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
 			# The parent says whether he interpreted the command

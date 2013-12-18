@@ -6,7 +6,6 @@ from handlers.Handler import *
 # Vocabulary for PUSH requests
 START_COMMAND = "START"
 PAUSE_COMMAND = "PAUSE"
-NEXT_IMAGE = -1
 
 class PushHandler(Handler):
 	"""

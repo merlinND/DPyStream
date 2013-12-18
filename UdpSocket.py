@@ -15,7 +15,11 @@ class UdpSocket(GenericSocket):
 		client is a simple object containing the client host address and its receive port.
 		"""
 		GenericSocket.__init__(self)
-
+		if s is None:
+			self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		else:
+			self.s = s
+		
 		# Which client is allowed to communicate with us
 		# (others are ignored)
 		self.clientHost = host

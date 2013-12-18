@@ -8,7 +8,7 @@ from handlers.Handler import *
 from handlers.CatalogHandler import *
 from handlers.TcpPullHandler import *
 from handlers.TcpPushHandler import *
-from handlers.UdpHandler import * # TODO: replace with UdpPullHandler
+from handlers.UdpPullHandler import *
 from handlers.UdpPushHandler import *
 
 
@@ -36,7 +36,7 @@ def setConnectionProperties(connectionProperties):
 		elif protocol == Protocol.TCP_PUSH:
 			handlerClass = TcpPushHandler
 		elif protocol == Protocol.UDP_PULL:
-			pass #handlerClass = UdpPullHandler
+			handlerClass = UdpPullHandler
 		elif protocol == Protocol.UDP_PUSH:
 			handlerClass = UdpPushHandler
 		elif protocol == Protocol.MCAST_PUSH:

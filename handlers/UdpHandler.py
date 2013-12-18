@@ -1,4 +1,5 @@
 # -*-coding:Utf-8 -*
+from threading import Timer
 
 import ResourceManager
 from handlers.Handler import *
@@ -38,9 +39,6 @@ class UdpHandler(Handler):
 		"""
 		self._interruptFlag = True
 		# We inform the sockets that we want them to commit suicide
-		# Note: dataSocket must be closed first as the client closes the connection from its side
-		if None != self._dataSocket:
-			self._dataSocket.kill()
 		self._commandSocket.kill()
 
 	def restartTimer(self):
@@ -56,15 +54,7 @@ class UdpHandler(Handler):
 		if GET_COMMAND == command[:len(GET_COMMAND)]:
 			if None == self._fragmentSize:
 				self.setupClientContact()
-			else:
-				frameId = int(command[len(GET_COMMAND):])
-				# Empty line necessary
-				if "" == self._commandSocket.nextLine():
-					# If we were asked for a specific frameId (otherwise just send the next one)
-					if (NEXT_IMG != frameId):
-						self._currentFrameId = frameId
-
-					self._sendCurrentFrame()
+			# If we needed to "send a frame", we let PushHandler or PullHandler take care of it
 		# If we couldn't recognized this command, maybe one of
 		# the parent class can
 		else:
@@ -133,10 +123,12 @@ class UdpHandler(Handler):
 		"""
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 		
-
 		print("Sending frame {} next frame will be #{}.".format(self._currentFrameId, nextFrameId))
 		messages = self._prepareMessages(self._currentFrameId, image)
+
+		# We create a UDP socket just for this occasion
+		socket = UdpSocket(None, self._clientIp, self._clientListenPort)
 		for message in messages:
-			self._dataSocket.send(message)
+			socket.send(message)
 
 		self._currentFrameId = nextFrameId
