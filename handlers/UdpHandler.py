@@ -12,6 +12,7 @@ LISTEN_COMMAND = "LISTEN_PORT "
 
 FRAGMENT_COMMAND = "FRAGMENT_SIZE "
 KEEP_ALIVE = "ALIVE "
+ALIVE_TIMEOUT = 60
 
 class UdpHandler(Handler):
 	"""
@@ -25,8 +26,9 @@ class UdpHandler(Handler):
 		Handler.__init__(self, commandSocket)
 		self._fragmentSize = None
 
-		# TODO : keep-alive mechanism
-		print("UdpHandler ready")
+		# If the keep-alive wasn't sent after 60 seconds, we commit suicide.
+		self._aliveTimer = Timer(ALIVE_TIMEOUT, self.kill)
+		self._isAliveTimerRunning = True
 
 	def kill(self):
 		"""
@@ -34,11 +36,15 @@ class UdpHandler(Handler):
 		"""
 		self._interruptFlag = True
 		# We inform the sockets that we want them to commit suicide
-		# Note: dataSocket must be closed first as the client
-		# closes the connection from its side
+		# Note: dataSocket must be closed first as the client closes the connection from its side
 		if None != self._dataSocket:
 			self._dataSocket.kill()
 		self._commandSocket.kill()
+
+	def restartTimer(self, autostart):
+		if self._isAliveTimerRunning:
+			self._aliveTimer.cancel()
+		self._aliveTimer = Timer(ALIVE_TIMEOUT, self.kill)
 
 	def _interpretCommand(self, command):
 		"""
