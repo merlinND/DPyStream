@@ -31,26 +31,29 @@ def parse(filename):
 	"""
 	global _catalogAddress, _catalogPort
 
-	# TODO : file io errors handling
-	with open(filename, 'r') as startupFile:
-		startupContent = startupFile.read()
-		startupContent = startupContent.split(ENDL)
+	try:
+		with open(filename, 'r') as startupFile:
+			startupContent = startupFile.read()
+			startupContent = startupContent.split(ENDL)
 
-		# First two lines : server address and port
-		_catalogAddress = startupContent[0].split(': ')[1]
-		_catalogPort = int(startupContent[1].split(': ')[1])
+			# First two lines : server address and port
+			_catalogAddress = startupContent[0].split(': ')[1]
+			_catalogPort = int(startupContent[1].split(': ')[1])
 
-		# All other lines : path to media descriptor files
-		mediaDescriptors = startupContent[2:]
-		for mediaDescriptor in mediaDescriptors:
-			media = _parseMediaDescriptor(mediaDescriptor)
+			# All other lines : path to media descriptor files
+			mediaDescriptors = startupContent[2:]
+			for mediaDescriptor in mediaDescriptors:
+				try:
+					media = _parseMediaDescriptor(mediaDescriptor)
+					# Add this media to the catalog
+					_catalog.append(media)
+				except EnvironmentError:
+					print('The media descriptor', mediaDescriptor, 'could not be read, ignoring this media.')
 
-			# Ask the ResourceManager to take this resource into account
-			#ResourceManager.addResource(media.id, media.files)
-			# Add this media to the catalog
-			_catalog.append(media)
-
-		return (_catalogAddress, _catalogPort)
+			return (_catalogAddress, _catalogPort)
+	except EnvironmentError:
+		print('The catalog descriptor', filename, 'could not be read, server cannot run.')
+		exit()
 
 def _parseMediaDescriptor(filename):
 	"""
@@ -69,9 +72,8 @@ def _parseMediaDescriptor(filename):
 		resources/1/img4.bmp
 		resources/1/img5.bmp
 	"""
-	media = {}
-
 	with open(PATH_TO_CATALOG_FOLDER + filename, 'r') as mediaDescriptorFile:
+		media = {}
 		mediaDescriptor = mediaDescriptorFile.read()
 		mediaDescriptor = mediaDescriptor.split(ENDL)
 
@@ -84,8 +86,8 @@ def _parseMediaDescriptor(filename):
 		media['files'] = []
 		for path in mediaDescriptor[7:]:
 			media['files'].append(path)
-
-	return media
+		
+		return media
 
 def addMediaToResourceManager():
 	for media in _catalog:

@@ -40,7 +40,6 @@ class SocketManager(Thread):
 		elif	Protocol.MCAST_PUSH == self._protocol:
 			# MultiCast works very differently: we don't wait for anyone to ask for the content,
 			# we just send it out continuously
-			print('Starting MultiCast handler from SocketManager with no client socket')
 			self.startHandler(None)
 		else:
 			raise(Exception('Protocol {} not supported by SocketManager.'.format(self._protocol)))
