@@ -42,7 +42,7 @@ class SocketManager(Thread):
 			# we just send it out continuously
 			self.startHandler(None)
 		else:
-			raise(Exception('Protocol {} not supported by SocketManager.'.format(self._protocol)))
+			raise Exception('Protocol {} not supported by SocketManager.'.format(self._protocol))
 
 	def acceptTcp(self):
 		serverSocket = TcpSocket()
@@ -70,15 +70,15 @@ class SocketManager(Thread):
 
 
 	def startHandler(self, clientSocket):
-		clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
-
-		self.clients.append(clientThread)
-		clientThread.start()
+		try:
+			clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
+			self.clients.append(clientThread)
+			clientThread.start()
+		except Exception:
+			print('Could not instanciate an appropriate handler for port', self._listeningPort, '- ignoring request')
 
 	def kill(self):
-		print("Closing port {} : killing {} client threads (will go down in {} seconds or less).".format(self._listeningPort, len(self.clients), self._selectTimer))
-
-		# TODO : sometimes client connections go down even if we do not kill them. Purge the clients list regularly ?
+		print("Closing port {} : killing {} threads (going down in {} seconds or less).".format(self._listeningPort, len(self.clients), self._selectTimer))
 
 		if None != self.accepter:
 			self.accepter.kill()

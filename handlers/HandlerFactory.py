@@ -43,7 +43,9 @@ def setConnectionProperties(connectionProperties):
 		elif protocol == Protocol.MCAST_PUSH:
 			handlerClass = MultiCastPushHandler
 		else:
-			raise Exception("The connection type {} is not supported.".format(protocol))
+			print("The connection type {} described in the catalog is not supported.".format(protocol))
+			print("Server will not run.")
+			exit()
 
 		properties['handlerClass'] = handlerClass
 		_connectionDescriptors[port] = properties
@@ -58,5 +60,5 @@ def createAppropriateHandler(port, socket):
 		theHandler.setMediaProperties(_connectionDescriptors[port])
 		return theHandler
 	except KeyError:
-		# TODO : fail gracefully
+		# This exception is handled in SocketManager
 		raise Exception("No connection is available on this port.")

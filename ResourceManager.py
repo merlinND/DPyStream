@@ -40,8 +40,6 @@ def _loadFrameBatch(mediaId, batchNumber):
 	Loads all frames for the media mediaId (into _resources),
 	BATCH_SIZE by BATCH_SIZE (ex: 5 by 5).
 	"""
-
-	# TODO : handle resource not found
 	index = batchNumber * BATCH_SIZE
 	for path in _paths[mediaId][index:index + BATCH_SIZE]:
 		if path not in _resources:
