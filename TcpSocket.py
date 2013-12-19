@@ -66,7 +66,10 @@ class TcpSocket(GenericSocket):
 			if self._interruptFlag:
 				self._close()
 			if readyToRead:
-				data = self.s.recv(receiveBuffer)
+				try:
+					data = self.s.recv(receiveBuffer)
+				except ConnectionResetError:
+					pass
 				self._buffer += str(data, 'Utf-8')
 			if self._buffer.find(delimiter) != -1:
 				(line, self._buffer) = self._buffer.split(delimiter, 1)
