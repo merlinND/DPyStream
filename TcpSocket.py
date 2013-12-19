@@ -44,15 +44,15 @@ class TcpSocket(GenericSocket):
 			self._close()
 		#else: self._close() called automatically after the timeout
 
-	def receive(self, n = 1):
+	def receive(self, receiveBuffer = 1):
 		self._blocked = True
 		message = b''
-		while len(message) < n and not self._interruptFlag:
+		while len(message) < receiveBuffer and not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
 			if self._interruptFlag:
 				self._close()
 			if readyToRead:
-				chunk = self.s.recv(n)
+				chunk = self.s.recv(receiveBuffer)
 				if chunk == b'':
 					raise RuntimeError("The TCP Socket connection was broken while trying to receive.")
 				message += chunk

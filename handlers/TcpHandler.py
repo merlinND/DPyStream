@@ -56,7 +56,7 @@ class TcpHandler(Handler):
 		"""
 		# Read the client listening port from the rest of the command
 		command = self._commandSocket.nextLine()
-		print("Command:", command)
+		
 		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]\
 		   and "" == self._commandSocket.nextLine():
 			self._clientIp = self._commandSocket.getIp()
@@ -88,7 +88,6 @@ class TcpHandler(Handler):
 		"""
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 
-		print("Sending frame {} next frame will be #{}.".format(self._currentFrameId, nextFrameId))
 		message = self._prepareMessage(self._currentFrameId, image)
 		self._dataSocket.send(message)
 

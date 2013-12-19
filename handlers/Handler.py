@@ -34,7 +34,6 @@ class Handler(Thread):
 		"""
 		while not self._interruptFlag:
 			command = self._commandSocket.nextLine()
-			print("Command:", command)
 
 			if None == command:
 				continue

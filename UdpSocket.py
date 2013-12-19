@@ -39,7 +39,7 @@ class UdpSocket(GenericSocket):
 		while totalSent < len(message) and not self._interruptFlag:
 			(rr,readyToWrite,err) = select.select([],[self.s],[], self._selectTimer)
 			if readyToWrite:
-				sent = self.s.sendto(message[totalSent:], (self.clientHost, self.clientPort))
+				sent = self.s.sendto(message, (self.clientHost, self.clientPort))
 				if 0 == sent:
 					raise RuntimeError("The UDP Socket was broken while trying to send.")
 				totalSent += sent

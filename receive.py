@@ -1,18 +1,27 @@
 # -*-coding:Utf-8 -*
 import socket
+from TcpSocket import *
 
-recevingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-recevingSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
+protocol = input("protocol = ")
 host = "127.0.0.1"
 port = int(input("receiving port = "))
 
-recevingSocket.bind((host, port))
+if "udp" == protocol:
+	recevingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	recevingSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	recevingSocket.bind((host, port))
+elif "tcp" == protocol:
+	receivingSocket = TcpSocket()
+	receivingSocket.listen(host, port)
+	receivingSocket = receivingSocket.accept()
 
 message = ""
 
 while "STOP" != message:
-	message, (clientIp, clientPort) = recevingSocket.recvfrom(4096)
+	if "udp" == protocol:
+		message, (clientIp, clientPort) = recevingSocket.recvfrom(4096)
+	elif "tcp" == protocol:
+		message = receivingSocket.receive(4096)
 
 #	message = str(message, 'Utf-8')
 
