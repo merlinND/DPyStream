@@ -89,6 +89,5 @@ class SocketManager(Thread):
 				client.kill()
 			i += 1
 			print(( len(self.clients) - i), " clients still alive")
-		
-		# And we then kill ourself
+		# And we then kill ourselves
 		self._interruptFlag = True

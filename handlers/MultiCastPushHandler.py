@@ -21,6 +21,9 @@ class MultiCastPushHandler(UdpPushHandler):
 		PushHandler.startPushing(self)
 		# We can choose our own fragment size
 		self._fragmentSize = 512 - MAX_HEADER_SIZE
+		
+		# We create a UDP socket for all sending actions
+		self.mCastSocket = MultiCastUdpSocket(None, self._clientIp, self._clientListenPort)
 	
 	def setMediaProperties(self, properties):
 		UdpPushHandler.setMediaProperties(self, properties)
@@ -28,6 +31,10 @@ class MultiCastPushHandler(UdpPushHandler):
 		self._clientIp = properties['address']
 		self._clientListenPort = properties['port']
 
+	def kill(self):
+		self.mCastSocket.kill()
+		UdpPushHandler.kill(self)
+	
 	def _sendCurrentFrame(self):
 		"""
 		Sends the current image (based on currentFrameId) to anyone who listens through a MultiCastUdpSocket.
@@ -35,11 +42,8 @@ class MultiCastPushHandler(UdpPushHandler):
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 		
 		messages = self._prepareMessages(self._currentFrameId, image)
-
-		# We create a UDP socket just for this occasion
-		socket = MultiCastUdpSocket(None, self._clientIp, self._clientListenPort)
 		for fragment in messages:
-			socket.send(fragment)
+			self.mCastSocket.send(fragment)
 		
 		self._currentFrameId = nextFrameId
 
