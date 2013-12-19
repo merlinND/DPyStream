@@ -1,8 +1,8 @@
 ServerAddress: 127.0.0.1
 ServerPort: 15000
-flux1.txt
-flux3.txt
-flux4.txt
-flux5.txt
-flux6.txt
-flux7.txt
+numbers.txt
+catching-bugs.txt
+do-not-touch-my-code.txt
+humidity-meter.txt
+tp-reseau-the-day-after.txt
+we-haz-the-codez.txt

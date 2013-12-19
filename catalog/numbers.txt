@@ -1,0 +1,12 @@
+ID: 1
+Name: Numbers
+Type: BMP
+Address: 127.0.0.1
+Port: 8088
+Protocol: TCP_PUSH
+IPS: 4
+resources/numbers/img1.bmp
+resources/numbers/img2.bmp
+resources/numbers/img3.bmp
+resources/numbers/img4.bmp
+resources/numbers/img5.bmp

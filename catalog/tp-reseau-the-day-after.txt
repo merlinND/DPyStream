@@ -1,0 +1,77 @@
+ID: 13
+Name: TPReseau-TheDayAfter
+Type: JPG
+Address: 127.0.0.1
+Port: 42003
+Protocol: UDP_PUSH
+IPS: 3
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-0.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-1.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-2.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-3.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-4.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-5.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-6.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-7.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-8.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-9.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-10.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-11.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-12.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-13.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-14.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-15.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-16.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-17.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-18.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-19.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-20.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-21.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-22.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-23.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-24.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-25.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-26.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-27.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-28.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-29.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-30.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-31.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-32.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-33.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-34.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-35.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-36.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-37.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-38.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-39.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-40.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-41.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-42.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-43.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-44.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-45.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-46.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-47.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-48.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-49.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-50.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-51.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-52.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-53.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-54.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-55.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-56.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-57.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-58.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-59.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-60.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-61.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-62.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-63.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-64.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-65.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-66.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-67.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-68.jpg
+resources/tp-reseau-the-day-after/tp-reseau-the-day-after-69.jpg

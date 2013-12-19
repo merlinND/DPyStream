@@ -1,0 +1,27 @@
+ID: 14
+Name: WeHazTheCodez
+Type: JPG
+Address: 225.6.7.8
+Port: 42004
+Protocol: MCAST_PUSH
+IPS: 10
+resources/we-haz-the-codez/we-haz-the-codez-0.jpg
+resources/we-haz-the-codez/we-haz-the-codez-1.jpg
+resources/we-haz-the-codez/we-haz-the-codez-2.jpg
+resources/we-haz-the-codez/we-haz-the-codez-3.jpg
+resources/we-haz-the-codez/we-haz-the-codez-4.jpg
+resources/we-haz-the-codez/we-haz-the-codez-5.jpg
+resources/we-haz-the-codez/we-haz-the-codez-6.jpg
+resources/we-haz-the-codez/we-haz-the-codez-7.jpg
+resources/we-haz-the-codez/we-haz-the-codez-8.jpg
+resources/we-haz-the-codez/we-haz-the-codez-9.jpg
+resources/we-haz-the-codez/we-haz-the-codez-10.jpg
+resources/we-haz-the-codez/we-haz-the-codez-11.jpg
+resources/we-haz-the-codez/we-haz-the-codez-12.jpg
+resources/we-haz-the-codez/we-haz-the-codez-13.jpg
+resources/we-haz-the-codez/we-haz-the-codez-14.jpg
+resources/we-haz-the-codez/we-haz-the-codez-15.jpg
+resources/we-haz-the-codez/we-haz-the-codez-16.jpg
+resources/we-haz-the-codez/we-haz-the-codez-17.jpg
+resources/we-haz-the-codez/we-haz-the-codez-18.jpg
+resources/we-haz-the-codez/we-haz-the-codez-19.jpg

@@ -1,0 +1,45 @@
+ID: 12
+Name: HumidityMeter
+Type: JPG
+Address: 127.0.0.1
+Port: 42002
+Protocol: UDP_PULL
+IPS: 15
+resources/humidity-meter/humidity-meter-0.jpg
+resources/humidity-meter/humidity-meter-1.jpg
+resources/humidity-meter/humidity-meter-2.jpg
+resources/humidity-meter/humidity-meter-3.jpg
+resources/humidity-meter/humidity-meter-4.jpg
+resources/humidity-meter/humidity-meter-5.jpg
+resources/humidity-meter/humidity-meter-6.jpg
+resources/humidity-meter/humidity-meter-7.jpg
+resources/humidity-meter/humidity-meter-8.jpg
+resources/humidity-meter/humidity-meter-9.jpg
+resources/humidity-meter/humidity-meter-10.jpg
+resources/humidity-meter/humidity-meter-11.jpg
+resources/humidity-meter/humidity-meter-12.jpg
+resources/humidity-meter/humidity-meter-13.jpg
+resources/humidity-meter/humidity-meter-14.jpg
+resources/humidity-meter/humidity-meter-15.jpg
+resources/humidity-meter/humidity-meter-16.jpg
+resources/humidity-meter/humidity-meter-17.jpg
+resources/humidity-meter/humidity-meter-18.jpg
+resources/humidity-meter/humidity-meter-19.jpg
+resources/humidity-meter/humidity-meter-20.jpg
+resources/humidity-meter/humidity-meter-21.jpg
+resources/humidity-meter/humidity-meter-22.jpg
+resources/humidity-meter/humidity-meter-23.jpg
+resources/humidity-meter/humidity-meter-24.jpg
+resources/humidity-meter/humidity-meter-25.jpg
+resources/humidity-meter/humidity-meter-26.jpg
+resources/humidity-meter/humidity-meter-27.jpg
+resources/humidity-meter/humidity-meter-28.jpg
+resources/humidity-meter/humidity-meter-29.jpg
+resources/humidity-meter/humidity-meter-30.jpg
+resources/humidity-meter/humidity-meter-31.jpg
+resources/humidity-meter/humidity-meter-32.jpg
+resources/humidity-meter/humidity-meter-33.jpg
+resources/humidity-meter/humidity-meter-34.jpg
+resources/humidity-meter/humidity-meter-35.jpg
+resources/humidity-meter/humidity-meter-36.jpg
+resources/humidity-meter/humidity-meter-37.jpg
