@@ -4,7 +4,7 @@ Type: JPG
 Address: 127.0.0.1
 Port: 42003
 Protocol: UDP_PUSH
-IPS: 15
+IPS: 10
 resources/tp-reseau-the-day-after/tp-reseau-the-day-after-0.jpg
 resources/tp-reseau-the-day-after/tp-reseau-the-day-after-1.jpg
 resources/tp-reseau-the-day-after/tp-reseau-the-day-after-2.jpg

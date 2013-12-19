@@ -11,9 +11,6 @@ class CatalogHandler(Handler):
 	def __init__(self, commandSocket):
 		Handler.__init__(self, commandSocket)
 		self._commandSocket = commandSocket
-		
-	def run(self):
-		self.receiveCommand()
 	
 	def kill(self):
 		self._interruptFlag = True

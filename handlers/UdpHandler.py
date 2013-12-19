@@ -64,6 +64,7 @@ class UdpHandler(Handler):
 			self.setupClientContact()
 			# If we needed to "send a frame", we let PushHandler or PullHandler take care of it
 		elif self.isCommand(command, KEEP_ALIVE_COMMAND):
+			self._commandSocket.nextLine() # Pass empty line
 			self.restartKeepAliveTimer()
 		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
@@ -99,7 +100,6 @@ class UdpHandler(Handler):
 		- This fragment's size (followed by endline)
 		- The actual fragment content
 		"""
-
 		messages = []
 
 		totalFrameSize = str(len(frameContent))

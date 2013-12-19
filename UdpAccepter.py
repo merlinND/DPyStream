@@ -40,8 +40,7 @@ class UdpAccepter:
 		self._connectedClients[client].receive(message)
 		
 		if newClient:
-			# Returning a socket handling that client
-			# and the message received
+			# Returning a socket handling that client and the message received
 			return self._connectedClients[client]
 		else:
 			return None
