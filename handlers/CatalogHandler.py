@@ -28,6 +28,5 @@ class CatalogHandler(Handler):
 
 	def receiveCommand(self):
 		while not self._interruptFlag:
-			print(self._commandSocket.nextLine())
 			self._commandSocket.send(Catalog.asHttp())
 		self.kill()

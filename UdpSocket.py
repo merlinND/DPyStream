@@ -42,14 +42,13 @@ class UdpSocket(GenericSocket):
 				sent = self.s.sendto(message, (self.clientHost, self.clientPort))
 				if 0 == sent:
 					raise RuntimeError("The UDP Socket was broken while trying to send.")
-				totalSent += sent
+				totalSent = sent
 
 	# TODO: how to keep large buffer size, but still be quick to return when a message only contains a few characters?
 	def nextLine(self, receiveBuffer=2, delimiter="\r\n"):
 		while not self._interruptFlag:
 			if self._buffer.find(delimiter) != -1:
-				(line, self._buffer) = self._buffer.split(\
-								   delimiter, 1)
+				(line, self._buffer) = self._buffer.split(delimiter, 1)
 				return line
 
 	def getIp(self):
