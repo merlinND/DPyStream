@@ -10,6 +10,7 @@ from handlers.TcpPullHandler import *
 from handlers.TcpPushHandler import *
 from handlers.UdpPullHandler import *
 from handlers.UdpPushHandler import *
+from handlers.MultiCastPushHandler import *
 
 
 def enum(**enums):
@@ -40,7 +41,7 @@ def setConnectionProperties(connectionProperties):
 		elif protocol == Protocol.UDP_PUSH:
 			handlerClass = UdpPushHandler
 		elif protocol == Protocol.MCAST_PUSH:
-			pass #handlerClass = MCastPushHandler
+			handlerClass = MultiCastPushHandler
 		else:
 			raise Exception("The connection type {} is not supported.".format(protocol))
 
