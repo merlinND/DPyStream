@@ -13,17 +13,14 @@ class MultiCastPushHandler(UdpPushHandler):
 		There is no need for a command socket here, we simply continuously send out our data.
 		"""
 		UdpPushHandler.__init__(self, commandSocket)
+		self._dataSocket = None
 
 		# We don't need any keep-alive mechanism
 		self._aliveTimer.cancel()
 		self._isAliveTimerRunning = False
-		# But we start pushing the content immediately
-		PushHandler.startPushing(self)
 		# We can choose our own fragment size
 		self._fragmentSize = 512 - MAX_HEADER_SIZE
-		
-		# We create a UDP socket for all sending actions
-		self.mCastSocket = MultiCastUdpSocket(None, self._clientIp, self._clientListenPort)
+
 	
 	def setMediaProperties(self, properties):
 		UdpPushHandler.setMediaProperties(self, properties)
@@ -31,8 +28,12 @@ class MultiCastPushHandler(UdpPushHandler):
 		self._clientIp = properties['address']
 		self._clientListenPort = properties['port']
 
+		# Now that we know where to send the stuff, we can create a socket
+		self._dataSocket = MultiCastUdpSocket(None, self._clientIp, self._clientListenPort)
+		# And we can start pushing the content immediately
+		PushHandler.startPushing(self)
+
 	def kill(self):
-		self.mCastSocket.kill()
 		UdpPushHandler.kill(self)
 	
 	def _sendCurrentFrame(self):

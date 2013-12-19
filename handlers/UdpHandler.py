@@ -31,6 +31,7 @@ class UdpHandler(Handler):
 		Initializes all attributes
 		"""
 		Handler.__init__(self, commandSocket)
+		self._dataSocket = None
 		self._fragmentSize = None
 
 		# If the keep-alive wasn't sent after ALIVE_TIMEOUT seconds, we commit suicide.
@@ -45,6 +46,7 @@ class UdpHandler(Handler):
 		self._interruptFlag = True
 		# We inform the sockets that we want them to commit suicide
 		self._commandSocket.kill()
+		self._dataSocket.kill()
 
 	def restartKeepAliveTimer(self):
 		self._aliveTimer.cancel()
@@ -82,6 +84,9 @@ class UdpHandler(Handler):
 
 			command = self._commandSocket.nextLine()
 			self._fragmentSize = int(command[len(FRAGMENT_COMMAND):]) - MAX_HEADER_SIZE
+
+			# We create a UDP socket to send out the data
+			self._dataSocket = UdpSocket(None, self._clientIp, self._clientListenPort)
 
 	def _prepareMessages(self, frameId, frameContent):
 		"""
@@ -129,10 +134,8 @@ class UdpHandler(Handler):
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 		
 		messages = self._prepareMessages(self._currentFrameId, image)
-
-		# We create a UDP socket just for this occasion
-		socket = UdpSocket(None, self._clientIp, self._clientListenPort)
+		
 		for fragment in messages:
-			socket.send(fragment)
+			self._dataSocket.send(fragment)
 		
 		self._currentFrameId = nextFrameId
