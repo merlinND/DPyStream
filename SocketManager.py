@@ -73,9 +73,6 @@ class SocketManager(Thread):
 		self.clients.append(clientThread)
 		clientThread.start()
 
-		print("Handler #{} started.".format(len(self.clients)))
-		print('Listening on', self._host, ':', self._listeningPort, "({})".format(self._protocol))
-
 	def kill(self):
 		print("Closing port {} : killing {} client threads (will go down in {} seconds or less).".format(self._listeningPort, len(self.clients), self._selectTimer))
 

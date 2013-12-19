@@ -27,17 +27,7 @@ class CatalogHandler(Handler):
 		pass
 
 	def receiveCommand(self):
-		command = b''
-		while command != b'e' and not self._interruptFlag:
-			# TODO: send the catalog only one per message
-			# received (not per single caracter)
-			command = self._commandSocket.receive(1)
-			
-			if command != b'e':
-				ignoredCharacters = (b'\n', b'\r', b'')
-				if command not in ignoredCharacters:
-					print(command, ' received, sending catalog.')
-					self._commandSocket.send(Catalog.asHttp())
-			else:
-				print(command, ' received, closing connection.')
-				self.kill()
+		while not self._interruptFlag:
+			print(self._commandSocket.nextLine())
+			self._commandSocket.send(Catalog.asHttp())
+		self.kill()
