@@ -57,10 +57,10 @@ class UdpHandler(Handler):
 		respond on the dataSocket.
 		"""
 		# The GET command could mean either "setup" or "send a frame"
-		if None == self._fragmentSize and CONNECTION_COMMAND == command[:len(CONNECTION_COMMAND)]:
+		if None == self._fragmentSize and self.isCommand(command, CONNECTION_COMMAND):
 			self.setupClientContact()
 			# If we needed to "send a frame", we let PushHandler or PullHandler take care of it
-		elif KEEP_ALIVE_COMMAND == command[:len(KEEP_ALIVE_COMMAND)]:
+		elif self.isCommand(command, KEEP_ALIVE_COMMAND):
 			self.restartKeepAliveTimer()
 		# If we couldn't recognized this command, maybe one of the parent class can
 		else:
@@ -76,7 +76,7 @@ class UdpHandler(Handler):
 		"""
 		# Read the client listening port from the rest of the command
 		command = self._commandSocket.nextLine()
-		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]:
+		if self.isCommand(command, LISTEN_COMMAND):
 			self._clientIp = self._commandSocket.getIp()
 			self._clientListenPort = int(command[len(LISTEN_COMMAND):])
 

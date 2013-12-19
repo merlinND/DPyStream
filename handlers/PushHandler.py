@@ -71,11 +71,11 @@ class PushHandler(Handler):
 		"""
 
 		# The GET command could only mean "establish connection"
-		if START_COMMAND == command[:len(START_COMMAND)]:
+		if self.isCommand(command, START_COMMAND):
 			# Empty line necessary
 			if "" == self._commandSocket.nextLine():
 				self.startPushing()
-		elif PAUSE_COMMAND == command[:len(PAUSE_COMMAND)]:
+		elif self.isCommand(command, PAUSE_COMMAND):
 			# Empty line necessary
 			if "" == self._commandSocket.nextLine():
 				self.stopPushing()

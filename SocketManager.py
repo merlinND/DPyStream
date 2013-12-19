@@ -24,7 +24,7 @@ class SocketManager(Thread):
 		self._listeningPort = port
 		self._protocol = protocol
 
-		print('Will listen on', host, ':', port, '(', self._protocol, ')')
+		print('Listening on {}:{} ({})'.format(host, port, self._protocol))
 		# We will maintain a list of all active connections
 		self.clients = []
 		self.accepter = None

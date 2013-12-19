@@ -40,14 +40,21 @@ class Handler(Thread):
 			else:
 				self._interpretCommand(command)
 
+	def isCommand(self, text, command):
+		"""
+		Tests if the text passed starts with the given command.
+		This is a simple helper function.
+		"""
+		return (command == text[:len(command)])
+
 	def run(self):
 		self.receiveCommand()
 
 	def _interpretCommand(self, command):
-		if END_COMMAND == command[:len(END_COMMAND)]:
+		if self.isCommand(command, END_COMMAND):
 			# Empty line necessary
 			if "" == self._commandSocket.nextLine():
 				self.kill()
-				print("Connection closed.")
+				print("Connection with client {}:{} closed.".format(self._clientIp, self._clientListenPort))
 				return True
 		return False # We couldn't interpret the command

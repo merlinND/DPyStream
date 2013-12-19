@@ -25,10 +25,10 @@ class PullHandler(Handler):
 		"""
 		Interpret the command received from the client and respond on the dataSocket.
 		"""
-		if GET_COMMAND == command[:len(GET_COMMAND)]:
+		if self.isCommand(command, GET_COMMAND):
 			frameId = int(command[len(GET_COMMAND):])
-			# There should be an empty line
-			_ = self._commandSocket.nextLine()
+			# There should be an empty line (but it's not that important)
+			self._commandSocket.nextLine()
 			
 			# If we were asked for a specific frameId (otherwise just send the next one)
 			if (NEXT_IMAGE != frameId):
