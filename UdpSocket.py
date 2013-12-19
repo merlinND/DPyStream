@@ -1,5 +1,8 @@
 # -*-coding:Utf-8 -*
 from GenericSocket import *
+from time import sleep
+
+DEFAULT_SLEEP_DELAY = 0.05
 
 class UdpSocket(GenericSocket):
 	"""
@@ -25,6 +28,8 @@ class UdpSocket(GenericSocket):
 		self.clientHost = host
 		self.clientPort = port
 
+		self._sleepDelay = DEFAULT_SLEEP_DELAY
+
 	def receive(self, message):
 		"""
 		This receive method is called by the UdpAccepter, which forwards to us only the messages that come from our client.
@@ -44,12 +49,14 @@ class UdpSocket(GenericSocket):
 					raise RuntimeError("The UDP Socket was broken while trying to send.")
 				totalSent = sent
 
-	# TODO: how to keep large buffer size, but still be quick to return when a message only contains a few characters?
-	def nextLine(self, receiveBuffer=2, delimiter="\r\n"):
+	def nextLine(self, receiveBuffer=4096, delimiter="\r\n"):
+		# TODO: receiveBuffer parameter is ignored in this method
 		while not self._interruptFlag:
 			if self._buffer.find(delimiter) != -1:
 				(line, self._buffer) = self._buffer.split(delimiter, 1)
 				return line
+			# Let the other threads have their time
+			sleep(self._sleepDelay)
 
 	def getIp(self):
 		return self.clientHost

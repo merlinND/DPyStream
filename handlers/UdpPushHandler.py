@@ -30,12 +30,3 @@ class UdpPushHandler(UdpHandler, PushHandler):
 	def kill(self):
 		UdpHandler.kill(self)
 		PushHandler.kill(self)
-
-	def _sendCurrentFrame(self):
-		# TODO: fix UDP_PUSH slowness!
-		# MulticastPush is fast, UDP_PULL is fast, but not UDP_PUSH
-		# The problem probably comes from the regular interruptions made by the client to KEEP_ALIVE
-		# (it does not come from the images used)
-		print('UdpHandler starting to send fragments...')
-		UdpHandler._sendCurrentFrame(self)
-		print('UdpHandler done sending fragments...')
