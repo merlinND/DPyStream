@@ -58,6 +58,7 @@ class UdpHandler(Handler):
 		Interpret the command received from the client and
 		respond on the dataSocket.
 		"""
+
 		# The GET command could mean either "setup" or "send a frame"
 		if None == self._fragmentSize and self.isCommand(command, CONNECTION_COMMAND):
 			self.setupClientContact()
@@ -134,8 +135,12 @@ class UdpHandler(Handler):
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 		
 		messages = self._prepareMessages(self._currentFrameId, image)
-		
+
 		for fragment in messages:
-			self._dataSocket.send(fragment)
+			try:
+				self._dataSocket.send(fragment)
+			# Sometimes a 'no route to host' error happens, but we can just ignore it and keep trying again
+			except OSError:
+				pass
 		
 		self._currentFrameId = nextFrameId
