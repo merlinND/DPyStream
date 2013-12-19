@@ -35,10 +35,10 @@ class Handler(Thread):
 		while not self._interruptFlag:
 			command = self._commandSocket.nextLine()
 
-			if None == command:
-				continue
-			else:
+			if None != command and len(command) > 0:
 				self._interpretCommand(command)
+			else:
+				continue
 
 	def isCommand(self, text, command):
 		"""
