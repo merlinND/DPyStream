@@ -74,7 +74,6 @@ class UdpHandler(Handler):
 		# Read the client listening port from the rest of the command
 		command = self._commandSocket.nextLine()
 		if LISTEN_COMMAND == command[:len(LISTEN_COMMAND)]:
-		   # No empty line sent ? and "" == self._commandSocket.nextLine():
 			self._clientIp = self._commandSocket.getIp()
 			self._clientListenPort = int(command[len(LISTEN_COMMAND):])
 
@@ -122,7 +121,7 @@ class UdpHandler(Handler):
 
 	def _sendCurrentFrame(self):
 		"""
-		Sends the current image (based on currentFrameId) to the client through the dataSocket.
+		Sends the current image (based on currentFrameId) to the client through a socket created for the occasion.
 		"""
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 		
@@ -133,5 +132,5 @@ class UdpHandler(Handler):
 		socket = UdpSocket(None, self._clientIp, self._clientListenPort)
 		for fragment in messages:
 			socket.send(fragment)
-
+		
 		self._currentFrameId = nextFrameId

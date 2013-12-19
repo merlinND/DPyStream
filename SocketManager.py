@@ -67,6 +67,7 @@ class SocketManager(Thread):
 				if None != clientSocket:
 					self.startHandler(clientSocket)
 
+
 	def startHandler(self, clientSocket):
 		clientThread = HandlerFactory.createAppropriateHandler(self._listeningPort, clientSocket)
 

@@ -17,8 +17,7 @@ class UdpPushHandler(UdpHandler, PushHandler):
 
 	def _interpretCommand(self, command):
 		"""
-		Receive a command from the client on the control socket
-		and interpret it.
+		Receive a command from the client on the control socket and interpret it.
 		"""
 		udpInterpreted = UdpHandler._interpretCommand(self, command)
 		# If the UdpHandler cannot interpret this command
