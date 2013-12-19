@@ -45,8 +45,11 @@ def parse(filename):
 			for mediaDescriptor in mediaDescriptors:
 				try:
 					media = _parseMediaDescriptor(mediaDescriptor)
-					# Add this media to the catalog
-					_catalog.append(media)
+					# Add this media to the catalog, but only if at least one of his images were readable
+					if len(media['files']) > 0:
+						_catalog.append(media)
+					else:
+						raise EnvironmentError()
 				except EnvironmentError:
 					print('The media descriptor', mediaDescriptor, 'could not be read, ignoring this media.')
 
@@ -85,7 +88,12 @@ def _parseMediaDescriptor(filename):
 		# The files list
 		media['files'] = []
 		for path in mediaDescriptor[7:]:
-			media['files'].append(path)
+			# While we're at it, we check that all media files are readable
+			try:
+				with open(path):
+						media['files'].append(path)
+			except EnvironmentError:
+				print('The media file', path, 'could not be read, ignoring this file.')
 		
 		return media
 
