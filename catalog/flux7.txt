@@ -4,7 +4,7 @@ Type: JPEG
 Address: 225.6.7.8
 Port: 12234
 Protocol: MCAST_PUSH
-IPS: 0.5
+IPS: 3
 resources/2/img1.jpg
 resources/2/img2.jpg
 resources/2/img3.jpg

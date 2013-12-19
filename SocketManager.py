@@ -38,8 +38,10 @@ class SocketManager(Thread):
 			or  Protocol.UDP_PUSH == self._protocol:
 			self.acceptUdp()
 		elif	Protocol.MCAST_PUSH == self._protocol:
-			# TODO: accept function for multicast: not needed?
-			pass
+			# MultiCast works very differently: we don't wait for anyone to ask for the content,
+			# we just send it out continuously
+			print('Starting MultiCast handler from SocketManager with no client socket')
+			self.startHandler(None)
 		else:
 			raise(Exception('Protocol {} not supported by SocketManager.'.format(self._protocol)))
 

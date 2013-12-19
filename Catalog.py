@@ -102,12 +102,14 @@ def getConnectionProperties():
 	[
 		{
 			'id': 1,
+			'address': 127.0.0.1
 			'port': 8088,
 			'protocol': 'TCP_PUSH',
 			'ips': 1.5
 		},
 		{
 			'id': 2,
+			'address': 225.6.7.8
 			'port': 12234,
 			'protocol': 'MCAST_PUSH',
 			'ips': 4
@@ -119,6 +121,7 @@ def getConnectionProperties():
 	for media in _catalog:
 		descriptor = {
 			'id': int(media['id']),
+			'address': media['address'],
 			'port': int(media['port']),
 			'protocol': media['protocol'],
 			'ips': float(media['ips'])

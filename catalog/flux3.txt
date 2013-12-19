@@ -4,7 +4,7 @@ Type: BMP
 Address: 225.100.110.12
 Port: 11111
 Protocol: MCAST_PUSH
-IPS: 0.5
+IPS: 5
 resources/1/img1.bmp
 resources/1/img2.bmp
 resources/1/img3.bmp
