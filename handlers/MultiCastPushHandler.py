@@ -34,7 +34,6 @@ class MultiCastPushHandler(UdpPushHandler):
 		"""
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
 		
-		print("Sending frame #{} next frame will be #{}.".format(self._currentFrameId, nextFrameId))
 		messages = self._prepareMessages(self._currentFrameId, image)
 
 		# We create a UDP socket just for this occasion

@@ -19,6 +19,7 @@ class MultiCastUdpSocket(UdpSocket):
 		GenericSocket.__init__(self)
 		if s is None:
 			self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+			self.s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 			self.s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
 		else:
 			self.s = s
