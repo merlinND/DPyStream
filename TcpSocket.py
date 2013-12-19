@@ -58,7 +58,8 @@ class TcpSocket(GenericSocket):
 		self._blocked = False
 		return message
 
-	def nextLine(self, receiveBuffer=4096, delimiter="\r\n"):
+	# TODO: how to keep large buffer size, but still be quick to return when a message only contains a few characters?
+	def nextLine(self, receiveBuffer=2, delimiter="\r\n"):
 		self._blocked = True
 		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
