@@ -21,7 +21,7 @@ for properties in connectionProperties:
 	server.start()
 	servers.append(server)
 
-dummy = input("Press enter to shutdown server...")
+dummy = input("Press enter to shutdown server...\r\n")
 # Once any input was given, we start closing down the connections
 # The script will end when all the connections are released
 for server in servers:

@@ -1,6 +1,7 @@
 ServerAddress: 127.0.0.1
 ServerPort: 15000
 flux1.txt
+flux2.txt
 flux3.txt
 flux4.txt
 flux5.txt

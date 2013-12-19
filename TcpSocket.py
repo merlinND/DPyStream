@@ -35,7 +35,6 @@ class TcpSocket(GenericSocket):
 
 	def _close(self):
 		GenericSocket._close(self)
-		self.s.shutdown(1)
 		self.s.close()
 	
 	def kill(self):
@@ -59,7 +58,7 @@ class TcpSocket(GenericSocket):
 		self._blocked = False
 		return message
 
-	def nextLine(self, receiveBuffer=2, delimiter="\r\n"):
+	def nextLine(self, receiveBuffer=4096, delimiter="\r\n"):
 		self._blocked = True
 		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([self.s],[],[], self._selectTimer)
@@ -68,9 +67,9 @@ class TcpSocket(GenericSocket):
 			if readyToRead:
 				try:
 					data = self.s.recv(receiveBuffer)
-				except ConnectionResetError:
-					pass
-				self._buffer += str(data, 'Utf-8')
+					self._buffer += str(data, 'Utf-8')
+				except:
+					continue
 			if self._buffer.find(delimiter) != -1:
 				(line, self._buffer) = self._buffer.split(delimiter, 1)
 				self._blocked = False
@@ -86,8 +85,11 @@ class TcpSocket(GenericSocket):
 			if self._interruptFlag:
 				self._close()
 			if readyToWrite:
-				sent = self.s.send(message[totalSent:])
-				if 0 == sent:
-					raise RuntimeError("The TCP Socket connection was broken while trying to send.")
-				totalSent += sent
+				try:
+					sent = self.s.send(message)
+					totalSent += sent
+					if 0 == sent:
+						raise RuntimeError("The TCP Socket connection was broken while trying to send.")
+				except:
+					continue
 		self._blocked = False
