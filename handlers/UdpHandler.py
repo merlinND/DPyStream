@@ -14,6 +14,9 @@ LISTEN_COMMAND = "LISTEN_PORT "
 
 FRAGMENT_COMMAND = "FRAGMENT_SIZE "
 
+# Used for the java client, which does recvfrom(FRAGMENT_SIZE) instead of recvfrom(FRAGMENT_SIZE + MAX_HEADER_SIZE):
+MAX_HEADER_SIZE = 25
+
 # Done for all UDP connections so that if the END command is not sent, the connection is closed at some point.
 KEEP_ALIVE_COMMAND = "ALIVE "
 ALIVE_TIMEOUT = 60
@@ -77,7 +80,7 @@ class UdpHandler(Handler):
 			self._clientListenPort = int(command[len(LISTEN_COMMAND):])
 
 			command = self._commandSocket.nextLine()
-			self._fragmentSize = int(command[len(FRAGMENT_COMMAND):])
+			self._fragmentSize = int(command[len(FRAGMENT_COMMAND):]) - MAX_HEADER_SIZE
 
 	def _prepareMessages(self, frameId, frameContent):
 		"""
@@ -104,7 +107,7 @@ class UdpHandler(Handler):
 
 			message = frameIdString + END_LINE\
 				 	+ totalFrameSize + END_LINE\
-				 	+ str(fragmentNumber) + END_LINE\
+				 	+ str(fragmentNumber * self._fragmentSize) + END_LINE\
 				 	+ str(thisFragmentSize) + END_LINE
 			message = message.encode('Utf-8')
 

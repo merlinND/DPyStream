@@ -1,15 +1,21 @@
 # -*-coding:Utf-8 -*
 import socket
+from TcpSocket import *
 
-commandSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-commandSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+# Sending to this address
+protocol = input("protocol = ")
+host = "127.0.0.1"
+port = int(input("sending port = "))
+
+if "udp" == protocol:
+	commandSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	commandSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+elif "tcp" == protocol:
+	commandSocket = TcpSocket()
+	commandSocket.connect(host, port)
 
 # Listening at this address
 #commandSocket.bind(("0.0.0.0", 13000))
-
-# Sending to this address
-host = "127.0.0.1"
-port = int(input("sending port = "))
 
 message = ""
 
@@ -21,7 +27,10 @@ while b'STOP' != message:
 
 	message = message.encode('Utf-8')
 
-	commandSocket.sendto(message, (host, port))
+	if "udp" == protocol:
+		commandSocket.sendto(message, (host, port))
+	elif "tcp" == protocol:
+		commandSocket.send(message)
 
 
 
