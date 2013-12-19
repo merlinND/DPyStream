@@ -41,10 +41,14 @@ class MultiCastPushHandler(UdpPushHandler):
 		Sends the current image (based on currentFrameId) to anyone who listens through a MultiCastUdpSocket.
 		"""
 		(image, nextFrameId) = ResourceManager.getFrame(self._mediaId, self._currentFrameId)
-		
 		messages = self._prepareMessages(self._currentFrameId, image)
 		for fragment in messages:
-			self.mCastSocket.send(fragment)
+			try:
+				self._dataSocket.send(fragment)
+			# Sometimes a 'no route to host' error happens, but we can just ignore it and keep trying again
+			except OSError:
+				#print('MultiCast encountered a no route to host exception.')
+				pass
 		
 		self._currentFrameId = nextFrameId
 
