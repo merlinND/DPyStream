@@ -21,10 +21,12 @@ class PushHandler(Handler):
 		
 		self._mediaId = 1
 		self._currentFrameId = 0
-		self._interval = 1 # Interval in seconds (replace with framerate from catalog?)
+		# Interval at which images will be sent in seconds
+		self._interval = 1
 		
 		# We create a new timer (no autostart)
 		self._isTimerRunning = False
+		self._shouldTimerRun = False
 		self._pushTimer = None
 
 	def setMediaProperties(self, properties):
@@ -37,19 +39,22 @@ class PushHandler(Handler):
 		Handler.kill(self)
 
 	def startPushing(self):
+		self._shouldTimerRun = True
 		self._pushTimer = Timer(self._interval, self._sendCurrentPushFrame)
 		self._pushTimer.start()
 		self._isTimerRunning = True
 
-	def restartPushTimer(self, autostart):
+	def restartPushTimer(self):
 		if self._isTimerRunning:
 			self._pushTimer.cancel()
-
-		self.startPushing()
+		if self._shouldTimerRun:
+			self.startPushing()
 
 	def stopPushing(self):
+		self._shouldTimerRun = False
 		if self._pushTimer is not None:
 			self._pushTimer.cancel()
+			self._pushTimer = None
 		self._isTimerRunning = False
 
 	def _sendCurrentPushFrame(self):
@@ -58,12 +63,10 @@ class PushHandler(Handler):
 		"""
 		# The timer just timed out (thus this function was called)
 		self._isTimerRunning = False
-
-		# Asks to the real sending method to send
+		# Ask to the real sending method to send
 		self._sendCurrentFrame()
-
 		# We restart the timer
-		self.restartPushTimer(True)
+		self.restartPushTimer()
 
 	def _interpretCommand(self, command):
 		"""
