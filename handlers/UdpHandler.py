@@ -32,6 +32,7 @@ class UdpHandler(Handler):
 
 		# If the keep-alive wasn't sent after ALIVE_TIMEOUT seconds, we commit suicide.
 		self._aliveTimer = Timer(ALIVE_TIMEOUT, self.kill)
+		self._aliveTimer.start()
 		self._isAliveTimerRunning = True
 
 	def kill(self):
@@ -45,6 +46,7 @@ class UdpHandler(Handler):
 	def restartKeepAliveTimer(self):
 		self._aliveTimer.cancel()
 		self._aliveTimer = Timer(ALIVE_TIMEOUT, self.kill)
+		self._aliveTimer.start()
 
 	def _interpretCommand(self, command):
 		"""
