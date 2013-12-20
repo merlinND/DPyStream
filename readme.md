@@ -3,7 +3,23 @@ DPyStream
 
 DPyStream is a tiny video streaming application allowing multiple protocols.
 
-![lots of videos at the same time](https://raw.github.com/MerlinND/DPyStream/master/capture.png)
+![lots of videos at the same time](screenshot.png)
+
+## Supported protocols
+
+* TCP (Push)
+* TCP (Pull)
+* UDP (Push)
+* UDP (Pull)
+* MultiCast (Push)
+
+## Resource management
+
+All videos that are sent are described in the catalog folder. To add (or change) a video, you need to:
+
+1. Add the files in the `resources/` folder
+2. Describe your video in a text file in the `catalog/` folder
+3. Add the path of your file to `catalog/startup.txt`
 
 ## How to run this app
 
@@ -15,8 +31,3 @@ You will need to have python *3.0* (or higher) installed to execute our applicat
 4. Execute the main file: `path/to/python DPyStream.py`
 5. The server is now running.
 6. To shutdown the server, at any time, just press `Enter`
-
-### Note
-
-At the INSA, you will find python already installed at this path: `"C:\Program Files\LibreOffice 4.0\program\python.exe"`
-Also, the resources are already loaded according to the present catalog.
