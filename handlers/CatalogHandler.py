@@ -19,5 +19,8 @@ class CatalogHandler(Handler):
 
 	def receiveCommand(self):
 		while not self._interruptFlag:
+			# Waiting for any two lines (so that the VideoClient only gets one catalog per request)
+			self._commandSocket.nextLine()
+			self._commandSocket.nextLine()
 			self._commandSocket.send(Catalog.asHttp())
 		self.kill()

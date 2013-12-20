@@ -166,7 +166,8 @@ def asHttp():
 	html += b'Server: TP_3IF_DPyStream\r\n'
 	html += b'Connection: Keep-Alive\r\n'
 	html += b'Content-Type: text/txt\r\n'
-	html += b'Content-Length: '+ bytes(str(len(body)), 'Utf-8') + b'\r\n'
+	# Adding two bytes to the body length (for the "\r\n" at the end)
+	html += b'Content-Length: '+ bytes(str(len(body) + 2), 'Utf-8') + b'\r\n'
 	html += b'\r\n'
 	html += body
 	html += b'\r\n'
