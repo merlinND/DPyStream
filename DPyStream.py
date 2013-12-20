@@ -4,8 +4,8 @@
 
 import Catalog
 from handlers import HandlerFactory
-from TcpSocket import *
-from SocketManager import *
+from sockets.TcpSocket import *
+from sockets.SocketManager import *
 
 (serverAddress, catalogPort) = Catalog.parse('catalog/startup.txt')
 Catalog.addMediaToResourceManager()

@@ -1,7 +1,7 @@
 # -*-coding:Utf-8 -*
 
 from handlers.UdpPushHandler import *
-from MultiCastUdpSocket import *
+from sockets.MultiCastUdpSocket import *
 
 class MultiCastPushHandler(UdpPushHandler):
 	"""

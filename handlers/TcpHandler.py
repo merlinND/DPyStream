@@ -2,7 +2,7 @@
 
 import ResourceManager
 from handlers.Handler import *
-from TcpSocket import *
+from sockets.TcpSocket import *
 
 # Common vocabulary for TCP requests
 CONNECTION_COMMAND = "GET "

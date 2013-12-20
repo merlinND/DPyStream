@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
-from GenericSocket import *
-from UdpSocket import *
+from sockets.GenericSocket import *
+from sockets.UdpSocket import *
 
 class MultiCastUdpSocket(UdpSocket):
 	"""

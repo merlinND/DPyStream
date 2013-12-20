@@ -4,9 +4,9 @@ import select
 
 from handlers import HandlerFactory
 from handlers.HandlerFactory import Protocol
-from TcpSocket import *
-from UdpSocket import *
-from UdpAccepter import *
+from sockets.TcpSocket import *
+from sockets.UdpSocket import *
+from sockets.UdpAccepter import *
 
 class SocketManager(Thread):
 	"""

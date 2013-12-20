@@ -1,5 +1,5 @@
 ﻿# -*-coding:Utf-8 -*
-from GenericSocket import *
+from sockets.GenericSocket import *
 
 class TcpSocket(GenericSocket):
 	"""

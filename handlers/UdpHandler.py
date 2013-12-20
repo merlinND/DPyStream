@@ -3,7 +3,7 @@ from threading import Timer
 
 import ResourceManager
 from handlers.Handler import *
-from UdpSocket import *
+from sockets.UdpSocket import *
 
 # Common vocabulary for UDP requests
 # TODO: put all commands in an enum?

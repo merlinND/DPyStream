@@ -1,5 +1,5 @@
 # -*-coding:Utf-8 -*
-from UdpSocket import *
+from sockets.UdpSocket import *
 
 class UdpAccepter:
 	"""

@@ -1,5 +1,5 @@
 # -*-coding:Utf-8 -*
-from GenericSocket import *
+from sockets.GenericSocket import *
 from time import sleep
 
 DEFAULT_SLEEP_DELAY = 0.05
