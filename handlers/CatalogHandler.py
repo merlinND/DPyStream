@@ -15,7 +15,8 @@ class CatalogHandler(Handler):
 	def kill(self):
 		self._interruptFlag = True
 		# We inform the commandSocket that we want it to commit suicide
-		self._commandSocket.kill()
+		if self._commandSocket is not None:
+			self._commandSocket.kill()
 
 	def setMediaProperties(self, properties):
 		"""

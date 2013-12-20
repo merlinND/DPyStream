@@ -4,7 +4,7 @@ Type: JPG
 Address: 225.6.7.8
 Port: 42004
 Protocol: MCAST_PUSH
-IPS: 10
+IPS: 3
 resources/we-haz-the-codez/we-haz-the-codez-0.jpg
 resources/we-haz-the-codez/we-haz-the-codez-1.jpg
 resources/we-haz-the-codez/we-haz-the-codez-2.jpg

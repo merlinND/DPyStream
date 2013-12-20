@@ -47,13 +47,11 @@ class SocketManager(Thread):
 	def acceptTcp(self):
 		serverSocket = TcpSocket()
 		serverSocket.listen(self._host, self._listeningPort)
-		clientSocket = None
 		# One TCP Handler per client
 		while not self._interruptFlag:
 			(readyToRead,rw,err) = select.select([serverSocket.s], [], [], self._selectTimer)
 			if readyToRead:
 				clientSocket = serverSocket.accept()
-
 				self.startHandler(clientSocket)
 
 	def acceptUdp(self):
@@ -85,9 +83,8 @@ class SocketManager(Thread):
 		i = 0
 		for client in self.clients:
 			# If this thread is still running, we kindly ask it to die
-			if client.is_alive():
-				client.kill()
+			client.kill()
 			i += 1
-			print(( len(self.clients) - i), " clients still alive")
+			print((len(self.clients) - i), "threads left to kill")
 		# And we then kill ourselves
 		self._interruptFlag = True

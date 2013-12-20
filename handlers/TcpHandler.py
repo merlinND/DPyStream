@@ -30,9 +30,10 @@ class TcpHandler(Handler):
 		self._interruptFlag = True
 		# We inform the sockets that we want them to commit suicide
 		# Note: dataSocket must be closed first as the client closes the connection from its side
-		if None != self._dataSocket:
+		if self._dataSocket is not None:
 			self._dataSocket.kill()
-		self._commandSocket.kill()
+		if self._commandSocket is not None:
+			self._commandSocket.kill()
 
 	def _interpretCommand(self, command):
 		"""

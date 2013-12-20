@@ -21,3 +21,6 @@ class GenericSocket:
 		self._interruptFlag = True
 		if not self._blocked:
 			self._close()
+		else:
+			# Otherwise, self._close() is called automatically after the timeout
+			pass
