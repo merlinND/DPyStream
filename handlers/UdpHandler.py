@@ -43,12 +43,10 @@ class UdpHandler(Handler):
 		"""
 		Properly closes all sockets and interrupts the thread.
 		"""
-		self._interruptFlag = True
-		# We inform the sockets that we want them to commit suicide
-		if self._commandSocket is not None:
-			self._commandSocket.kill()
-		if self._dataSocket is not None:
-			self._dataSocket.kill()
+		Handler.kill(self)
+
+		self._aliveTimer.cancel()
+		self._isAliveTimerRunning = False
 
 	def restartKeepAliveTimer(self):
 		self._aliveTimer.cancel()

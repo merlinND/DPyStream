@@ -28,7 +28,6 @@ class UdpAccepter:
 		port = None
 
 		message, (host, port) = self.commonSocket.recvfrom(self.receiveBuffer)
-
 		client = host + ":" + str(port)
 
 		# If necessary, create a new UdpSocket instance for this client and add it to the list

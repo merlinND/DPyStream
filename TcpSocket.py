@@ -36,14 +36,6 @@ class TcpSocket(GenericSocket):
 	def _close(self):
 		GenericSocket._close(self)
 		self.s.close()
-	
-	def kill(self):
-		self._interruptFlag = True
-		if not self._blocked:
-			self._close()
-		else:
-			# self._close() is called automatically after the timeout
-			pass
 
 	def receive(self, receiveBuffer = 1):
 		self._blocked = True

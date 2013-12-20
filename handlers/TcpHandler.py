@@ -19,21 +19,6 @@ class TcpHandler(Handler):
 		"""
 		Handler.__init__(self, commandSocket)
 		self._commandSocket = commandSocket
-		self._dataSocket = None
-		self._clientIp = None
-		self._clientListenPort = None
-
-	def kill(self):
-		"""
-		Properly closes all sockets and interrupts the thread.
-		"""
-		self._interruptFlag = True
-		# We inform the sockets that we want them to commit suicide
-		# Note: dataSocket must be closed first as the client closes the connection from its side
-		if self._dataSocket is not None:
-			self._dataSocket.kill()
-		if self._commandSocket is not None:
-			self._commandSocket.kill()
 
 	def _interpretCommand(self, command):
 		"""
