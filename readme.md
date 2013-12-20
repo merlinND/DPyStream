@@ -11,7 +11,7 @@ This application was made during our 3rd year of software engineering degree, as
 
 ## How to run this app
 
-You will need to have python installed as a development dependency. See [python's site](http://www.python.org/) for help with that.
+You will need to have python installed to execute our application. See [python's site](http://www.python.org/) for help with that.
 
 1. Install python (say, at `path/to/python`)
 2. Change your directory to the root folder: `cd path/to/DPyStream/`
