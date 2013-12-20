@@ -4,6 +4,7 @@
 
 import Catalog
 from handlers import HandlerFactory
+from handlers.MultiCastCatalogHandler import *
 from sockets.TcpSocket import *
 from sockets.SocketManager import *
 
@@ -21,8 +22,13 @@ for properties in connectionProperties:
 	server.start()
 	servers.append(server)
 
+# Instanciate one more to serve the catalog via multicast
+multiCastCatalogHandler = MultiCastCatalogHandler('225.6.7.8', 4567)
+multiCastCatalogHandler.start()
+
 input("Press enter to shutdown server...\r\n")
 # Once any input was given, we start closing down the connections
 # The script will end when all the connections are released
+multiCastCatalogHandler.kill()
 for server in servers:
 	server.kill()

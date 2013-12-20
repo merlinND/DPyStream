@@ -4,19 +4,12 @@ from handlers.Handler import *
 
 class CatalogHandler(Handler):
 	"""
-	This class is able to manage connections from clients who are
-	interested in getting the catalog.
+	This class is able to manage connections from clients who are interested in getting the catalog via TCP.
 	"""
 	
 	def __init__(self, commandSocket):
 		Handler.__init__(self, commandSocket)
 		self._commandSocket = commandSocket
-	
-	def kill(self):
-		self._interruptFlag = True
-		# We inform the commandSocket that we want it to commit suicide
-		if self._commandSocket is not None:
-			self._commandSocket.kill()
 
 	def setMediaProperties(self, properties):
 		"""
